@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Tile">
+        <attr name="type" format="enum">
+            <enum name="normal" value="1"/>
+            <enum name="another_turn" value="2"/>
+            <enum name="invincible" value="4"/>
+        </attr>
+    </declare-styleable>
+</resources>
