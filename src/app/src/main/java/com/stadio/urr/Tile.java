@@ -56,4 +56,17 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     public int getTile_type() {
         return tile_type;
     }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+
+    public boolean isAvailable(){
+        return piece == null;
+    }
 }

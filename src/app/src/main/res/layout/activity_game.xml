@@ -288,4 +288,15 @@
         android:src="@drawable/piece_white"
         custom:side="white"></com.stadio.urr.Piece>
 
+    <com.stadio.urr.Piece
+        android:id="@+id/piece_black"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@+id/tile13"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toStartOf="@+id/tile2"
+        android:src="@drawable/piece_black"
+        custom:side="black"></com.stadio.urr.Piece>
+
 </RelativeLayout>

@@ -27,7 +27,6 @@ enum Sides{
 
 public class Piece extends androidx.appcompat.widget.AppCompatImageView {
     int side;
-    Point position;
     public float dx;
     public float dy;
 
@@ -48,6 +47,26 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
             a.recycle();
         }
 
+        decideImgae();
+    }
+
+    public Piece(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public Piece(Piece piece) {
+        super(piece.getContext());
+        RelativeLayout.LayoutParams pieceLayoutParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(pieceLayoutParams);
+        layoutParams.setMargins(pieceLayoutParams.leftMargin, pieceLayoutParams.topMargin, pieceLayoutParams.rightMargin, pieceLayoutParams.bottomMargin);
+        this.setLayoutParams(layoutParams);
+        this.side = piece.side;
+        this.dx = piece.dx;
+        this.dy = piece.dy;
+        decideImgae();
+    }
+
+    public void decideImgae() {
         if (side == Sides.WHITE.getValue()) {
             this.setImageResource(R.drawable.piece_white);
         } else if (side == Sides.BLACK.getValue()) {
@@ -55,7 +74,4 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
         }
     }
 
-    public Piece(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
 }

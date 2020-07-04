@@ -23,9 +23,15 @@ public class GameActivity extends AppCompatActivity {
 
     RelativeLayout relativeLayout;
     Tile root_tile;
-    ArrayList<Tile> tiles;
-    Piece game_piece;
+    static ArrayList<Tile> tiles;
+    ArrayList<Piece> whites;
+    ArrayList<Piece> blacks;
+    Piece game_piece_white;
+    Piece game_piece_black;
 
+    final int NUMBER_OF_PIECES = 7;
+    final float TILE_PRECENT = (float) (0.85 / 8);
+    final float PIECE_PRECENT = (float) (TILE_PRECENT * 0.9);
     float width_dp;
     float height_dp;
     private float width_px;
@@ -39,10 +45,14 @@ public class GameActivity extends AppCompatActivity {
 
         relativeLayout = findViewById(R.id.game_relative_layout);
         root_tile = findViewById(R.id.tile);
-        game_piece = findViewById(R.id.piece_white);
-        game_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_white = findViewById(R.id.piece_white);
+        game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_black = findViewById(R.id.piece_black);
+        game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
 
         tiles = new ArrayList<>();
+        whites = new ArrayList<>();
+        blacks = new ArrayList<>();
     }
 
     public void getSizes(){
@@ -58,7 +68,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void setTiles(){
-        float tile_size = (float) (width_dp * 0.85) / 8;
+        float tile_size = width_dp * TILE_PRECENT;
         float margin_bottom = convertDpToPixel((height_dp - tile_size * 3) / 2, getApplicationContext());
         float margin_right = convertDpToPixel((width_dp - tile_size * 8) / 2, getApplicationContext());
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) root_tile.getLayoutParams();
@@ -77,9 +87,28 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void setPieces(Piece piece, ArrayList<Piece> pieces) {
+        float piece_size = width_dp * PIECE_PRECENT;
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
+        layoutParams.height = (int) convertDpToPixel((int) piece_size, getApplicationContext());
+        layoutParams.width = (int) convertDpToPixel((int) piece_size, getApplicationContext());
+        piece.setLayoutParams(layoutParams);
+        pieces.add(piece);
+
+        for (int i = 0; i < NUMBER_OF_PIECES - 1; i++) {
+            Piece temp_piece = new Piece(piece);
+            temp_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+            temp_piece.setVisibility(View.VISIBLE);
+            relativeLayout.addView(temp_piece);
+        }
+    }
+
     public void onWindowFocusChanged(boolean hasFocus) {
         getSizes();
         setTiles();
+        setPieces(game_piece_white, whites);
+        setPieces(game_piece_black, blacks);
+        DragNDrop.tiles = tiles;
     }
 
     public static float convertPixelsToDp(float px, Context context) {
