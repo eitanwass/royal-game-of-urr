@@ -15,6 +15,8 @@
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="60dp"
         android:src="@drawable/invincibilty_tile"
         custom:type="another_turn"></com.stadio.urr.Tile>
 
@@ -274,4 +276,16 @@
         app:layout_constraintBottom_toTopOf="@+id/tile5"
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:type="normal"></com.stadio.urr.Tile>
+
+    <com.stadio.urr.Piece
+        android:id="@+id/piece_white"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tile14"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/tile18"
+        android:src="@drawable/piece_white"
+        custom:side="white"></com.stadio.urr.Piece>
+
 </RelativeLayout>

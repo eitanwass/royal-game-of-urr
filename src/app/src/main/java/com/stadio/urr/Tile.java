@@ -2,19 +2,7 @@ package com.stadio.urr;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Point;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.View;
-import android.widget.ImageView;
-
-import java.text.AttributedCharacterIterator;
-import java.text.Normalizer;
-import java.util.ArrayList;
 
 enum Attributes{
     NORMAL (1),
@@ -47,7 +35,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
                 0, 0);
 
         try {
-            tile_type = a.getInt(R.styleable.Tile_type, 0);
+            tile_type = a.getInt(R.styleable.Tile_type, 1);
         } finally {
             a.recycle();
         }

@@ -7,4 +7,11 @@
             <enum name="invincible" value="4"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="Piece">
+        <attr name="side" format="enum">
+            <enum name="white" value="0"/>
+            <enum name="black" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

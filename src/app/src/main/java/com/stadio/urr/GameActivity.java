@@ -2,23 +2,29 @@ package com.stadio.urr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
+
 public class GameActivity extends AppCompatActivity {
 
     RelativeLayout relativeLayout;
     Tile root_tile;
     ArrayList<Tile> tiles;
+    Piece game_piece;
 
     float width_dp;
     float height_dp;
@@ -33,6 +39,8 @@ public class GameActivity extends AppCompatActivity {
 
         relativeLayout = findViewById(R.id.game_relative_layout);
         root_tile = findViewById(R.id.tile);
+        game_piece = findViewById(R.id.piece_white);
+        game_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
 
         tiles = new ArrayList<>();
     }
@@ -80,5 +88,22 @@ public class GameActivity extends AppCompatActivity {
 
     public static float convertDpToPixel(float dp, Context context){
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    @SuppressLint("NewApi")
+    private int getSoftButtonsBarHeight() {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
     }
 }
