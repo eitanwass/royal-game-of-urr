@@ -3,6 +3,8 @@ package com.stadio.urr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -17,7 +19,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
-public class LoginMenuActivity extends AppCompatActivity {
+public class RegisterMenuActivity extends AppCompatActivity {
 
     private Socket mSocket;
     {
@@ -28,8 +30,11 @@ public class LoginMenuActivity extends AppCompatActivity {
         }
     }
 
+    private TextView repeatPasswordErrorTextView;
+
     private EditText usernameEditText;
     private EditText passwordEditText;
+    private EditText repeatPasswordEditText;
 
     private ProgressBar progressBar;
     private TextView errorTextView;
@@ -39,14 +44,47 @@ public class LoginMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_menu);
 
-        usernameEditText = findViewById(R.id.loginUsernameEditText);
-        passwordEditText = findViewById(R.id.loginPasswordEditText);
+        repeatPasswordErrorTextView = findViewById(R.id.repeatPasswordErrorTextView);
+
+        usernameEditText = findViewById(R.id.registerUsernameEditText);
+        passwordEditText = findViewById(R.id.registerPasswordEditText);
+        repeatPasswordEditText = findViewById(R.id.registerRepeatPasswordEditText);
 
         progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
+
+        repeatPasswordEditText.addTextChangedListener( new RepeatPasswordTextWatched());
     }
 
-    public void loginOnClick(View view) {
+    private class RepeatPasswordTextWatched implements TextWatcher{
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String password = passwordEditText.getText().toString();
+            String repeatPassword = repeatPasswordEditText.getText().toString();
+
+            final int visibility = password.equals(repeatPassword) ? View.INVISIBLE : View.VISIBLE;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    repeatPasswordErrorTextView.setVisibility(visibility);
+                }
+            });
+        }
+    }
+
+    public void registerOnClick(View view) {
 
         ProgressBar progress = findViewById(R.id.progressBar);
 
@@ -61,7 +99,7 @@ public class LoginMenuActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.INVISIBLE);
-                        SendLoginData();
+                        SendRegisterData(mSocket);
                     }
                 });
             }
@@ -90,7 +128,7 @@ public class LoginMenuActivity extends AppCompatActivity {
         });
     }
 
-    private void SendLoginData(){
+    private void SendRegisterData(Socket socket){
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
@@ -101,7 +139,7 @@ public class LoginMenuActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mSocket.emit("login", emissionJson);
+        socket.emit("register", emissionJson);
     }
 
     private void DisplayError(String problem) {
