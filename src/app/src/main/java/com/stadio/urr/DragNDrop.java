@@ -1,74 +1,94 @@
 package com.stadio.urr;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
 public class DragNDrop implements View.OnTouchListener {
-    private final int OFFSET = 50;
     float width;
     float height;
     int soft_buttons_height;
     static ArrayList<Tile> tiles;
-    float currentX;
-    float currentY;
+    Tile current_tile;
+    boolean first = true;
 
-    public DragNDrop(float width, float height, int soft_buttons_height){
+    /**
+     * Initializes a DragNDrop object.
+     * @param width: the width of the screen in pixels.
+     * @param height: the height of the screen in piexels.
+     * @param soft_buttons_height: the height of the soft buttons.
+     */
+    public DragNDrop(float width, float height, int soft_buttons_height) {
         this.width = width;
         this.height = height;
         this.soft_buttons_height = soft_buttons_height;
     }
 
+    /**
+     * Overrides the onTouch method.
+     * @param view: the view we want to move.
+     * @param motionEvent: What happend.
+     * @return: returns true if handled false if not.
+     */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (first) {
+            this.current_tile = ((Piece) view).getStart_tile();
+            first = false;
+        }
         final float x = motionEvent.getRawX();
         final float y = motionEvent.getRawY();
 
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                currentX = view.getX();
-                currentY = view.getY();
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                ((Piece) view).dx = x - layoutParams.leftMargin;
-                ((Piece) view).dy = y - layoutParams.topMargin;
+                ((Piece) view).dx = x - view.getX();
+                ((Piece) view).dy = y - view.getY();
+                GameActivity.relativeLayout.bringChildToFront(view);
                 break;
             case MotionEvent.ACTION_MOVE:
-                layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.rightMargin = (int) ((width - soft_buttons_height) - (x - ((Piece) view).dx));
-                layoutParams.leftMargin = (int) (x - ((Piece) view).dx);
-                layoutParams.topMargin = (int) (y - ((Piece) view).dy);
-                layoutParams.bottomMargin = (int) (height - (y - ((Piece) view).dy));
-                view.setLayoutParams(layoutParams);
+                view.setX(x - ((Piece) view).dx);
+                view.setY(y - ((Piece) view).dy);
                 break;
             case MotionEvent.ACTION_UP:
                 snap(view);
+                snapToTile(view, current_tile);
                 break;
         }
-
         view.invalidate();
         return true;
     }
 
+    /**
+     * Snap the view into a tile.
+     * @param view: the view we want to snap.
+     */
     private void snap(View view) {
         for (Tile t : tiles) {
-            if (Math.abs(t.getX() - view.getX()) < OFFSET &&
-                    Math.abs(t.getY() - view.getY()) < OFFSET && t.isAvailable()) {
+            if (checkInside(view, t) && !t.equals(current_tile) && t.isAvailable()) {
                 removePieceFromTile((Piece) view);
-                view.setX(t.getX() + (t.getWidth() - view.getWidth()) / 2);
-                view.setY(t.getY() + (t.getHeight() - view.getHeight()) / 2);
                 t.setPiece((Piece) view);
+                current_tile = t;
                 return;
             }
         }
-        view.setX(currentX);
-        view.setY(currentY);
     }
 
+    /**
+     * Does the actual snapping.
+     * @param view: the view we want to snap.
+     * @param tile: the tile we want to snap into.
+     */
+    public static void snapToTile(View view, Tile tile) {
+        view.setX(tile.getX() + (int) ((tile.getWidth() - view.getWidth()) / 2));
+        view.setY(tile.getY() + (int) ((tile.getHeight() - view.getHeight()) / 2));
+    }
+
+    /**
+     * Removes a piece from a tile.
+     * @param piece: the piece we want to remove.
+     */
     public void removePieceFromTile(Piece piece) {
         for (Tile t : tiles) {
             if (t.getPiece() == null)
@@ -79,7 +99,16 @@ public class DragNDrop implements View.OnTouchListener {
         }
     }
 
-    public void setTiles(ArrayList<Tile> tiles) {
-        this.tiles = tiles;
+    /**
+     * Checks if a view is inside a certain tile (used for snapping).
+     * @param view: the view we want to check.
+     * @param tile: the tile we want to check if it's in.
+     * @return: returns true if it is, false if not.
+     */
+    public boolean checkInside(View view, Tile tile) {
+        float middleX = view.getX() + view.getHeight() / 2;
+        float middleY = view.getY() + view.getHeight() / 2;
+        return (middleX < tile.getX() + tile.getWidth() && middleX > tile.getX() &&
+            middleY < tile.getY() + tile.getHeight() && middleY > tile.getY());
     }
 }

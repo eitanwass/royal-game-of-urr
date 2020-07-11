@@ -29,11 +29,21 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
     int side;
     public float dx;
     public float dy;
+    private Tile start_tile;
 
+    /**
+     * creates an empty piece.
+     * @param context: the context in which this piece exists.
+     */
     public Piece(Context context) {
         super(context);
     }
 
+    /**
+     * Creates a Piece with attributes.
+     * @param context: the context in which the piece exists.
+     * @param attrs: the attributes the piece has.
+     */
     public Piece(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -47,13 +57,17 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
             a.recycle();
         }
 
-        decideImgae();
+        decideImage();
     }
 
     public Piece(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * Creates a duplicate if an existing piece.
+     * @param piece: the piece we want to duplicate.
+     */
     public Piece(Piece piece) {
         super(piece.getContext());
         RelativeLayout.LayoutParams pieceLayoutParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
@@ -63,10 +77,14 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
         this.side = piece.side;
         this.dx = piece.dx;
         this.dy = piece.dy;
-        decideImgae();
+        this.start_tile = piece.start_tile;
+        decideImage();
     }
 
-    public void decideImgae() {
+    /**
+     *  Decides what image to use depending on the side.
+     */
+    public void decideImage() {
         if (side == Sides.WHITE.getValue()) {
             this.setImageResource(R.drawable.piece_white);
         } else if (side == Sides.BLACK.getValue()) {
@@ -74,4 +92,11 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
         }
     }
 
+    public void setStart_tile(Tile start_tile) {
+        this.start_tile = start_tile;
+    }
+
+    public Tile getStart_tile() {
+        return start_tile;
+    }
 }

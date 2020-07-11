@@ -13,6 +13,8 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -21,21 +23,24 @@ import static android.content.ContentValues.TAG;
 
 public class GameActivity extends AppCompatActivity {
 
-    RelativeLayout relativeLayout;
+    static RelativeLayout relativeLayout;
     Tile root_tile;
     static ArrayList<Tile> tiles;
-    ArrayList<Piece> whites;
-    ArrayList<Piece> blacks;
+    static ArrayList<Piece> whites;
+    static ArrayList<Piece> blacks;
     Piece game_piece_white;
     Piece game_piece_black;
 
-    final int NUMBER_OF_PIECES = 7;
-    final float TILE_PRECENT = (float) (0.85 / 8);
+    final static int NUMBER_OF_PIECES = 7;
+    final float NUMBER_OF_TILES_ACCROSS = 8;
+    final float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
+    final float TILE_PRECENT = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_ACCROSS;
     final float PIECE_PRECENT = (float) (TILE_PRECENT * 0.9);
     float width_dp;
     float height_dp;
-    private float width_px;
-    private float height_px;
+    static float width_px;
+    static float height_px;
+    static int soft_buttons_height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +52,20 @@ public class GameActivity extends AppCompatActivity {
         root_tile = findViewById(R.id.tile);
         game_piece_white = findViewById(R.id.piece_white);
         game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_white.setStart_tile((Tile) findViewById(R.id.start_white));
         game_piece_black = findViewById(R.id.piece_black);
         game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_black.setStart_tile((Tile) findViewById(R.id.start_black));
 
         tiles = new ArrayList<>();
         whites = new ArrayList<>();
         blacks = new ArrayList<>();
     }
 
+    /**
+     * Sets the width and height of the screen.
+     * both in pixels and dp.
+     */
     public void getSizes(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -63,10 +74,12 @@ public class GameActivity extends AppCompatActivity {
         height_px = size.y;
         width_dp = convertPixelsToDp(width_px, getApplicationContext());
         height_dp = convertPixelsToDp(height_px, getApplicationContext());
-        Log.d("Sizes", "onWindowFocusChanged: height:" + height_dp);
-        Log.d("Sizes", "onWindowFocusChanged: width:" + width_dp);
+        soft_buttons_height = getSoftButtonsBarHeight();
     }
 
+    /**
+     * Sets the tile array list.
+     */
     public void setTiles(){
         float tile_size = width_dp * TILE_PRECENT;
         float margin_bottom = convertDpToPixel((height_dp - tile_size * 3) / 2, getApplicationContext());
@@ -87,20 +100,40 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets an array list of all the pieces from a certain side.
+     * @param piece: the piece we want to duplicate.
+     * @param pieces: the array list we want to keep all the pieces in.
+     */
     private void setPieces(Piece piece, ArrayList<Piece> pieces) {
         float piece_size = width_dp * PIECE_PRECENT;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
         layoutParams.height = (int) convertDpToPixel((int) piece_size, getApplicationContext());
         layoutParams.width = (int) convertDpToPixel((int) piece_size, getApplicationContext());
-        piece.setLayoutParams(layoutParams);
+        RelativeLayout.LayoutParams layoutParams_tile = (RelativeLayout.LayoutParams) piece.getStart_tile().getLayoutParams();
+        int rightMargin = (layoutParams_tile.width - layoutParams.width) / 2;
+        int topMargin = 0;
+        int bottomMargin = 0;
+        if (piece.side == Sides.WHITE.getValue()) {
+            topMargin = (layoutParams_tile.height - layoutParams.height) / 2;
+        } else {
+            bottomMargin = (layoutParams_tile.height - layoutParams.height) / 2;
+        }
+        layoutParams.setMargins(0, topMargin, rightMargin, bottomMargin);
+        piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
         pieces.add(piece);
+        piece.invalidate();
 
         for (int i = 0; i < NUMBER_OF_PIECES - 1; i++) {
             Piece temp_piece = new Piece(piece);
+            temp_piece.setLayoutParams(new RelativeLayout.LayoutParams(layoutParams));
             temp_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+            pieces.add(temp_piece);
             temp_piece.setVisibility(View.VISIBLE);
+            temp_piece.invalidate();
             relativeLayout.addView(temp_piece);
         }
+        relativeLayout.invalidate();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -111,14 +144,29 @@ public class GameActivity extends AppCompatActivity {
         DragNDrop.tiles = tiles;
     }
 
+    /**
+     * Converts pixels to dp.
+     * @param px: the size in pixels.
+     * @param context: the context we're in.
+     * @return: the result of the conversion.
+     */
     public static float convertPixelsToDp(float px, Context context) {
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
+    /**
+     * Converts pixels to dp.
+     * @param dp: the size in dp.
+     * @param context: the context we're in.
+     * @return: the result of the conversion.
+     */
     public static float convertDpToPixel(float dp, Context context){
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
+    /**
+     * @return: Returns the height of the soft button.
+     */
     @SuppressLint("NewApi")
     private int getSoftButtonsBarHeight() {
         // getRealMetrics is only available with API 17 and +
