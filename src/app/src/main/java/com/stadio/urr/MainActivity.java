@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Socket mSocket;
     {
         try {
-            this.mSocket = IO.socket("http://10.0.2.2:4242");
+            this.mSocket = IO.socket("https://game-of-urr.herokuapp.com:4242");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
