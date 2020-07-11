@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:overScrollMode="ifContentScrolls"
     android:verticalScrollbarPosition="defaultPosition"
-    tools:context=".LoginMenuActivity">
+    tools:context=".RegisterMenuActivity">
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -38,6 +38,37 @@
                 android:inputType="textPersonName" />
 
             <TextView
+                android:id="@+id/usernameErrorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username Already Exists"
+                android:textColor="@color/colorError"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/registerEmailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Email:" />
+
+            <EditText
+                android:id="@+id/registerEmailEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="name@service.com"
+                android:inputType="textWebEmailAddress" />
+
+            <TextView
+                android:id="@+id/emailErrorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email is not in correct format"
+                android:textColor="@color/colorError"
+                android:visibility="invisible" />
+
+            <TextView
                 android:id="@+id/loginPasswordTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,10 +84,42 @@
                 android:inputType="textPassword" />
 
             <TextView
+                android:id="@+id/passwordErrorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password is not up to Standards"
+                android:textColor="@color/colorError"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/registerRepeatPasswordTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Repeat Password:" />
+
+            <EditText
+                android:id="@+id/registerRepeatPasswordEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:hint="*******"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/repeatPasswordErrorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is not the Same as Password"
+                android:textColor="@color/colorError"
+                android:visibility="invisible" />
+
+            <TextView
                 android:id="@+id/errorTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:textColor="@color/colorError" />
 
             <Button
@@ -64,8 +127,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:onClick="loginOnClick"
-                android:text="Login" />
+                android:onClick="registerOnClick"
+                android:text="Register" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -74,14 +137,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/registerTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:onClick="switchToRegisterMenu"
-                android:text="register" />
 
         </LinearLayout>
     </ScrollView>
