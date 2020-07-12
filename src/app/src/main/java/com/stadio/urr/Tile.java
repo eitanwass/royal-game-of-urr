@@ -58,7 +58,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
         } else if (tile_type == Attributes.ANOTHER_TURN.getValue()) {
             this.setImageResource(R.drawable.another_turn_tile);
         } else if (tile_type == Attributes.INVINCIBILITY.getValue()) {
-            this.setImageResource(R.drawable.invincibilty_tile);
+            this.setImageResource(R.drawable.invincibility_tile);
         } else {
           this.setImageResource(0);
         }

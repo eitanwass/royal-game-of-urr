@@ -35,7 +35,7 @@ public class GameActivity extends AppCompatActivity {
     final float NUMBER_OF_TILES_ACCROSS = 8;
     final float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
     final float TILE_PRECENT = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_ACCROSS;
-    final float PIECE_PRECENT = (float) (TILE_PRECENT * 0.9);
+    final float PIECE_PRECENT = (float) (TILE_PRECENT * 0.75);
     float width_dp;
     float height_dp;
     static float width_px;
