@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Tile">
+        <attr name="type" format="enum">
+            <enum name="normal" value="1"/>
+            <enum name="another_turn" value="2"/>
+            <enum name="invincible" value="4"/>
+            <enum name="start" value="8"/>
+            <enum name="end" value="16"/>
+        </attr>
+        <attr name="exclusive_to" format="enum">
+            <enum name="white" value="0"/>
+            <enum name="black" value="1"/>
+            <enum name="none" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Piece">
+        <attr name="side" format="enum">
+            <enum name="white" value="0"/>
+            <enum name="black" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>
