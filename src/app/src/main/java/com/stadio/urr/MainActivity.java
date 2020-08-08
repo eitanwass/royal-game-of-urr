@@ -9,8 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.engineio.client.transports.Polling;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.squareup.okhttp.ws.WebSocket;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private Socket mSocket;
     {
         try {
-            this.mSocket = IO.socket("https://game-of-urr.herokuapp.com:4242");
+            IO.Options opts = new IO.Options();
+//            opts.port = 433;
+            opts.transports = new String[] {Polling.NAME};
+            this.mSocket = IO.socket("http://10.0.2.2");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -38,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().hide();
+
         getReferences();
+
+        LOGGER.log(Level.INFO, mSocket.toString());
 
         mSocket.connect();
 
@@ -64,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             public void call(Object... args) {
                 displayMessage("--Could not connect to server--\n--Online features unavailable--");
 
+                LOGGER.log(Level.INFO, "Connection attempt timed out.");
+
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
@@ -76,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void call(Object... args) {
                 displayMessage("--Could not connect to server--\n--Online features unavailable--");
+
+                LOGGER.log(Level.INFO, "Connection error: " + args[0].toString());
 
                 try {
                     TimeUnit.SECONDS.sleep(1);

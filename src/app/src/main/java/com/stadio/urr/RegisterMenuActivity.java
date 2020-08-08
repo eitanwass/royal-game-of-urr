@@ -1,15 +1,19 @@
 package com.stadio.urr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -25,7 +29,7 @@ public class RegisterMenuActivity extends AppCompatActivity {
     private Socket mSocket;
     {
         try {
-            this.mSocket = IO.socket("https://game-of-urr.herokuapp.com:4242");
+            this.mSocket = IO.socket("http://10.0.2.2");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -63,34 +67,6 @@ public class RegisterMenuActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
-    }
-
-    private class RepeatPasswordTextWatched implements TextWatcher{
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            String password = passwordEditText.getText().toString();
-            String repeatPassword = repeatPasswordEditText.getText().toString();
-
-            final int visibility = password.equals(repeatPassword) ? View.INVISIBLE : View.VISIBLE;
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    repeatPasswordErrorTextView.setVisibility(visibility);
-                }
-            });
-        }
     }
 
     public void ListenForEvents() {
@@ -143,5 +119,34 @@ public class RegisterMenuActivity extends AppCompatActivity {
                 errorTextView.setText(displayMessage);
             }
         });
+    }
+
+    /* User Registration. */
+    private class RepeatPasswordTextWatched implements TextWatcher{
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String password = passwordEditText.getText().toString();
+            String repeatPassword = repeatPasswordEditText.getText().toString();
+
+            final int visibility = password.equals(repeatPassword) ? View.INVISIBLE : View.VISIBLE;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    repeatPasswordErrorTextView.setVisibility(visibility);
+                }
+            });
+        }
     }
 }
