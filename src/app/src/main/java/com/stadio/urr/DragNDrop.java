@@ -66,26 +66,43 @@ public class DragNDrop implements View.OnTouchListener {
      */
     private void snap(View view) {
         for (Tile t : tiles) {
-            if (checkInside(view, t) && !t.equals(current_tile) && t.isAvailable() && canMove((Piece) view, t)) {
-                removePieceFromTile((Piece) view);
-                t.setPiece((Piece) view);
-                current_tile = t;
-                return;
+            if (checkInside(view, t) && !t.equals(current_tile) && canMove((Piece) view, t)) {
+                if (!t.isAvailable() && t.getPiece().side != ((Piece)view).side) {
+                    eat((Piece) view, t);
+                }
+                else if(t.isAvailable() || gotToEnd((Piece) view, t) ) {
+                    removePieceFromTile((Piece) view);
+                    t.setPiece((Piece) view);
+                    current_tile = t;
+                    return;
+                }
             }
         }
+    }
+
+    public void eat(Piece piece, Tile tile) {
+        tile.getPiece().getStart_tile().setPiece(tile.getPiece());
+        snapToTile(tile.getPiece(), tile.getPiece().getStart_tile());
+        tile.setPiece(piece);
+        removePieceFromTile(piece);
+        current_tile = tile;
     }
 
     private boolean canMove(Piece piece, Tile t) {
         if (t.tile_exclusivity != piece.side && t.tile_exclusivity != Sides.NONE.getValue()){
             return false;
         }
-        if (t.index == 15 && findTile(piece).index + GameActivity.current_roll >= 15){
+        if (gotToEnd(piece, t)){
             return true;
         }
         if (t.index != findTile(piece).index + GameActivity.current_roll){
             return false;
         }
         return true;
+    }
+
+    private boolean gotToEnd(Piece piece, Tile t) {
+        return (t.index == 15 && findTile(piece).index + GameActivity.current_roll >= 15);
     }
 
     /**

@@ -20,7 +20,7 @@
         android:src="@drawable/invincibility_tile"
         custom:exclusive_to="white"
         custom:type="another_turn"
-        app:tile_index="2"></com.stadio.urr.Tile>
+        app:tile_index="13"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile2"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile3"
         custom:exclusive_to="black"
         custom:type="normal"
-        app:tile_index="13"></com.stadio.urr.Tile>
+        app:tile_index="2"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile3"
@@ -51,7 +51,7 @@
         app:layout_constraintStart_toEndOf="@id/tile2"
         custom:exclusive_to="black"
         custom:type="normal"
-        app:tile_index="14"></com.stadio.urr.Tile>
+        app:tile_index="1"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile4"
@@ -66,7 +66,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile2"
         custom:exclusive_to="black"
         custom:type="normal"
-        app:tile_index="1"></com.stadio.urr.Tile>
+        app:tile_index="14"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile5"
@@ -81,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tile"
         custom:exclusive_to="black"
         custom:type="another_turn"
-        app:tile_index="2"></com.stadio.urr.Tile>
+        app:tile_index="13"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile6"
@@ -97,7 +97,7 @@
         custom:exclusive_to="black"
         custom:layout_constraintEnd_toStartOf="@+id/tile5"
         custom:type="normal"
-        app:tile_index="12"></com.stadio.urr.Tile>
+        app:tile_index="3"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile7"
@@ -110,10 +110,10 @@
         android:src="@drawable/invincibility_tile"
         app:layout_constraintBottom_toTopOf="@+id/tile2"
         app:layout_constraintTop_toTopOf="@+id/tile6"
+        app:tile_index="4"
         custom:exclusive_to="black"
         custom:layout_constraintEnd_toStartOf="@+id/tile6"
-        custom:type="another_turn"
-        app:tile_index="11"></com.stadio.urr.Tile>
+        custom:type="another_turn"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile8"
@@ -129,7 +129,7 @@
         app:layout_constraintTop_toTopOf="@+id/tile7"
         custom:exclusive_to="white"
         custom:type="normal"
-        app:tile_index="12"></com.stadio.urr.Tile>
+        app:tile_index="3"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile9"
@@ -145,7 +145,7 @@
         app:layout_constraintTop_toTopOf="@+id/tile8"
         custom:exclusive_to="white"
         custom:type="another_turn"
-        app:tile_index="11"></com.stadio.urr.Tile>
+        app:tile_index="4"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile10"
@@ -160,7 +160,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile9"
         app:layout_constraintTop_toTopOf="@+id/tile9"
         custom:type="normal"
-        app:tile_index="10"></com.stadio.urr.Tile>
+        app:tile_index="5"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile11"
@@ -174,7 +174,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tile10"
         app:layout_constraintEnd_toStartOf="@+id/tile10"
         custom:type="normal"
-        app:tile_index="9"></com.stadio.urr.Tile>
+        app:tile_index="6"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile12"
@@ -188,7 +188,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tile11"
         app:layout_constraintEnd_toStartOf="@+id/tile11"
         custom:type="normal"
-        app:tile_index="8"></com.stadio.urr.Tile>
+        app:tile_index="7"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile13"
@@ -203,7 +203,7 @@
         app:layout_constraintStart_toStartOf="@+id/tile8"
         app:layout_constraintTop_toBottomOf="@+id/tile12"
         custom:type="normal"
-        app:tile_index="7"></com.stadio.urr.Tile>
+        app:tile_index="8"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile14"
@@ -218,7 +218,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile3"
         app:layout_constraintTop_toBottomOf="@+id/tile11"
         custom:type="invincible"
-        app:tile_index="6"></com.stadio.urr.Tile>
+        app:tile_index="9"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile15"
@@ -232,7 +232,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tile12"
         app:layout_constraintStart_toStartOf="@+id/tile12"
         custom:type="normal"
-        app:tile_index="5"></com.stadio.urr.Tile>
+        app:tile_index="10"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile16"
@@ -247,7 +247,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile10"
         app:layout_constraintStart_toEndOf="@+id/tile15"
         custom:type="normal"
-        app:tile_index="4"></com.stadio.urr.Tile>
+        app:tile_index="11"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile17"
@@ -261,7 +261,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tile8"
         app:layout_constraintStart_toStartOf="@+id/tile8"
         custom:type="normal"
-        app:tile_index="3"></com.stadio.urr.Tile>
+        app:tile_index="12"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile18"
@@ -274,7 +274,7 @@
         android:src="@drawable/invincibility_tile"
         custom:exclusive_to="white"
         custom:type="normal"
-        app:tile_index="13"></com.stadio.urr.Tile>
+        app:tile_index="2"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile19"
@@ -288,7 +288,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tile18"
         custom:exclusive_to="white"
         custom:type="normal"
-        app:tile_index="14"></com.stadio.urr.Tile>
+        app:tile_index="1"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
         android:id="@+id/tile20"
@@ -304,10 +304,10 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:exclusive_to="white"
         custom:type="normal"
-        app:tile_index="1"></com.stadio.urr.Tile>
+        app:tile_index="14"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
-        android:id="@+id/start_white"
+        android:id="@+id/end_white"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@+id/tile"
@@ -317,10 +317,10 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:exclusive_to="white"
         custom:type="start"
-        app:tile_index="0"></com.stadio.urr.Tile>
+        app:tile_index="15"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
-        android:id="@+id/end_white"
+        android:id="@+id/start_white"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@+id/tile"
@@ -329,11 +329,11 @@
         app:layout_constraintBottom_toTopOf="@+id/tile5"
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:exclusive_to="white"
-        custom:type="end"
-        app:tile_index="15"></com.stadio.urr.Tile>
+        custom:type="start"
+        app:tile_index="0"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
-        android:id="@+id/start_black"
+        android:id="@+id/end_black"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_above="@+id/tile15"
@@ -344,10 +344,10 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:exclusive_to="black"
         custom:type="start"
-        app:tile_index="0"></com.stadio.urr.Tile>
+        app:tile_index="15"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Tile
-        android:id="@+id/end_black"
+        android:id="@+id/start_black"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_above="@+id/tile15"
@@ -357,17 +357,18 @@
         app:layout_constraintBottom_toTopOf="@+id/tile5"
         app:layout_constraintStart_toEndOf="@+id/tile19"
         custom:exclusive_to="black"
-        custom:type="end"
-        app:tile_index="15"></com.stadio.urr.Tile>
+        custom:type="start"
+        app:tile_index="0"></com.stadio.urr.Tile>
 
     <com.stadio.urr.Piece
         android:id="@+id/piece_white"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@+id/tile14"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_toStartOf="@+id/tile20"
+        android:layout_toEndOf="@+id/tile19"
         android:src="@drawable/piece_white"
         custom:side="white"></com.stadio.urr.Piece>
 
@@ -375,10 +376,11 @@
         android:id="@+id/piece_black"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_above="@+id/tile13"
+        android:layout_above="@+id/tile14"
+        android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:layout_toStartOf="@+id/tile4"
+        android:layout_toEndOf="@+id/tile3"
         android:src="@drawable/piece_black"
         custom:side="black"></com.stadio.urr.Piece>
 

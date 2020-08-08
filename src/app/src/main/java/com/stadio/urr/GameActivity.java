@@ -133,7 +133,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         layoutParams.height = (int) convertDpToPixel((int) piece_size, getApplicationContext());
         layoutParams.width = (int) convertDpToPixel((int) piece_size, getApplicationContext());
         RelativeLayout.LayoutParams layoutParams_tile = (RelativeLayout.LayoutParams) piece.getStart_tile().getLayoutParams();
-        int rightMargin = (layoutParams_tile.width - layoutParams.width) / 2;
+        int leftMargin = (layoutParams_tile.width - layoutParams.width) / 2;
         int topMargin = 0;
         int bottomMargin = 0;
         if (piece.side == Sides.WHITE.getValue()) {
@@ -141,7 +141,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             bottomMargin = (layoutParams_tile.height - layoutParams.height) / 2;
         }
-        layoutParams.setMargins(0, topMargin, rightMargin, bottomMargin);
+        layoutParams.setMargins(leftMargin, topMargin, 0, bottomMargin);
         piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
         pieces.add(piece);
         piece.invalidate();
