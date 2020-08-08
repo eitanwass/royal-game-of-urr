@@ -1,6 +1,7 @@
 package com.stadio.urr;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -24,13 +26,16 @@ import static android.content.ContentValues.TAG;
 public class GameActivity extends AppCompatActivity {
 
     static RelativeLayout relativeLayout;
+    ConstraintLayout constraintLayout_dice;
     Tile root_tile;
     static ArrayList<Tile> tiles;
     static ArrayList<Piece> whites;
     static ArrayList<Piece> blacks;
     Piece game_piece_white;
     Piece game_piece_black;
+    ImageView[] dice;
 
+    final static int NUMBER_OF_DICE = 4;
     final static int NUMBER_OF_PIECES = 7;
     final float NUMBER_OF_TILES_ACCROSS = 8;
     final float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
@@ -49,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         relativeLayout = findViewById(R.id.game_relative_layout);
+        constraintLayout_dice = findViewById(R.id.constraint_layout_dice);
         root_tile = findViewById(R.id.tile);
         game_piece_white = findViewById(R.id.piece_white);
         game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
@@ -57,6 +63,11 @@ public class GameActivity extends AppCompatActivity {
         game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
         game_piece_black.setStart_tile((Tile) findViewById(R.id.start_black));
 
+        dice = new ImageView[NUMBER_OF_DICE];
+        dice[0] = findViewById(R.id.dice1);
+        dice[1] = findViewById(R.id.dice2);
+        dice[2] = findViewById(R.id.dice3);
+        dice[3] = findViewById(R.id.dice4);
         tiles = new ArrayList<>();
         whites = new ArrayList<>();
         blacks = new ArrayList<>();
@@ -79,10 +90,15 @@ public class GameActivity extends AppCompatActivity {
 
     /**
      * Sets the tile array list.
+     * That includes sizes and positioning.
      */
     public void setTiles(){
-        float tile_size = width_dp * TILE_PRECENT;
-        float margin_bottom = convertDpToPixel((height_dp - tile_size * 3) / 2, getApplicationContext());
+        float dice_height = constraintLayout_dice.getHeight();
+        float tile_size = (width_dp) * TILE_PRECENT;
+        float margin_bottom = convertDpToPixel((height_dp - dice_height - tile_size * 3) / 2, getApplicationContext());
+        //Log.d(TAG, "setTiles: dice height: " + dice_height);
+        Log.d(TAG, "setTiles: tile_size: " + tile_size);
+        Log.d(TAG, "setTiles: margin bottom: " + margin_bottom);
         float margin_right = convertDpToPixel((width_dp - tile_size * 8) / 2, getApplicationContext());
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) root_tile.getLayoutParams();
         params.setMargins(0, 0, (int) margin_right, (int) margin_bottom);
@@ -138,6 +154,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void onWindowFocusChanged(boolean hasFocus) {
         getSizes();
+        //setDice();
         setTiles();
         setPieces(game_piece_white, whites);
         setPieces(game_piece_black, blacks);
