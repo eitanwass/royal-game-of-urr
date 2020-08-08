@@ -1,18 +1,25 @@
 package com.stadio.urr;
 
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class DragNDrop implements View.OnTouchListener {
     float width;
     float height;
     int soft_buttons_height;
     static ArrayList<Tile> tiles;
-    Tile current_tile;
+    static Tile current_tile;
     boolean first = true;
+    int ALPHA = 50;
+    Piece ghost_piece;
 
     /**
      * Initializes a DragNDrop object.
@@ -20,10 +27,11 @@ public class DragNDrop implements View.OnTouchListener {
      * @param height: the height of the screen in piexels.
      * @param soft_buttons_height: the height of the soft buttons.
      */
-    public DragNDrop(float width, float height, int soft_buttons_height) {
+    public DragNDrop(float width, float height, int soft_buttons_height, Piece ghost_piece) {
         this.width = width;
         this.height = height;
         this.soft_buttons_height = soft_buttons_height;
+        this.ghost_piece = ghost_piece;
     }
 
     /**
@@ -38,6 +46,7 @@ public class DragNDrop implements View.OnTouchListener {
             this.current_tile = ((Piece) view).getStart_tile();
             first = false;
         }
+        current_tile = findTile((Piece) view);
         final float x = motionEvent.getRawX();
         final float y = motionEvent.getRawY();
 
@@ -46,18 +55,47 @@ public class DragNDrop implements View.OnTouchListener {
                 ((Piece) view).dx = x - view.getX();
                 ((Piece) view).dy = y - view.getY();
                 GameActivity.relativeLayout.bringChildToFront(view);
+                setGhost((Piece) view);
                 break;
             case MotionEvent.ACTION_MOVE:
                 view.setX(x - ((Piece) view).dx);
                 view.setY(y - ((Piece) view).dy);
                 break;
             case MotionEvent.ACTION_UP:
+                Log.d(TAG, "onTouch: curernt tile" + current_tile);
                 snap(view);
+                Log.d(TAG, "onTouch: curernt tile" + current_tile);
                 snapToTile(view, current_tile);
+                ghost_piece.setVisibility(View.INVISIBLE);
                 break;
         }
         view.invalidate();
         return true;
+    }
+
+    private void setGhost(Piece piece) {
+        int index = findTile(piece).index + GameActivity.current_roll;
+        if (index > 15) {
+            index = 15;
+        }
+        GameActivity.relativeLayout.bringChildToFront(ghost_piece);
+        Tile ghost_piece_tile = getTileByIndex(index, piece.side);
+        if (piece.side == Sides.WHITE.getValue()){
+            ghost_piece.setImageResource(R.drawable.piece_white);
+        } else {
+            ghost_piece.setImageResource(R.drawable.piece_black);
+        }
+        snapToTile(ghost_piece, ghost_piece_tile);
+        ghost_piece.setVisibility(View.VISIBLE);
+    }
+
+    private Tile getTileByIndex(int index, int side) {
+        for (Tile t : tiles) {
+            if (t.index == index && (t.tile_exclusivity == side || t.tile_exclusivity == Sides.NONE.getValue())) {
+                return t;
+            }
+        }
+        return null;
     }
 
     /**
@@ -81,10 +119,12 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     public void eat(Piece piece, Tile tile) {
-        tile.getPiece().getStart_tile().setPiece(tile.getPiece());
-        snapToTile(tile.getPiece(), tile.getPiece().getStart_tile());
-        tile.setPiece(piece);
+        //tile.getPiece().getStart_tile().setPiece(tile.getPiece());
+        Piece eated_piece = tile.getPiece();
+        removePieceFromTile(eated_piece);
+        snapToTile(eated_piece, eated_piece.getStart_tile());
         removePieceFromTile(piece);
+        tile.setPiece(piece);
         current_tile = tile;
     }
 

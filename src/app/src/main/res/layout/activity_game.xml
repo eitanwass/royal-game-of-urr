@@ -373,6 +373,16 @@
         custom:side="white"></com.stadio.urr.Piece>
 
     <com.stadio.urr.Piece
+        android:id="@+id/ghost_piece"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="0dp"
+        android:alpha="0.5"
+        android:src="@drawable/piece_black"
+        android:visibility="invisible"
+        app:side="none"></com.stadio.urr.Piece>
+
+    <com.stadio.urr.Piece
         android:id="@+id/piece_black"
         android:layout_width="50dp"
         android:layout_height="50dp"

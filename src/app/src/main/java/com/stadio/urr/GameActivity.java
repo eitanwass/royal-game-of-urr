@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -63,10 +64,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         roll_dice_button.setOnClickListener(this);
         root_tile = findViewById(R.id.tile);
         game_piece_white = findViewById(R.id.piece_white);
-        game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
         game_piece_white.setStart_tile((Tile) findViewById(R.id.start_white));
         game_piece_black = findViewById(R.id.piece_black);
-        game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
         game_piece_black.setStart_tile((Tile) findViewById(R.id.start_black));
 
         dice = new ImageView[NUMBER_OF_DICE];
@@ -142,14 +143,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             bottomMargin = (layoutParams_tile.height - layoutParams.height) / 2;
         }
         layoutParams.setMargins(leftMargin, topMargin, 0, bottomMargin);
-        piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+        piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
+
         pieces.add(piece);
         piece.invalidate();
 
         for (int i = 0; i < NUMBER_OF_PIECES - 1; i++) {
             Piece temp_piece = new Piece(piece);
             temp_piece.setLayoutParams(new RelativeLayout.LayoutParams(layoutParams));
-            temp_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
+            temp_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
             pieces.add(temp_piece);
             temp_piece.setVisibility(View.VISIBLE);
             temp_piece.invalidate();

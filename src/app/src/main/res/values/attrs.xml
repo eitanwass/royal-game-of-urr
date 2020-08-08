@@ -20,6 +20,7 @@
         <attr name="side" format="enum">
             <enum name="white" value="0"/>
             <enum name="black" value="1"/>
+            <enum name="none" value="2"/>
         </attr>
     </declare-styleable>
 </resources>
