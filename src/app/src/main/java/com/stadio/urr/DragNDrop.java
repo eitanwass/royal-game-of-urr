@@ -107,11 +107,13 @@ public class DragNDrop implements View.OnTouchListener {
             if (checkInside(view, t) && !t.equals(current_tile) && canMove((Piece) view, t)) {
                 if (!t.isAvailable() && t.getPiece().side != ((Piece)view).side) {
                     eat((Piece) view, t);
+                    GameActivity.changeTurn();
                 }
                 else if(t.isAvailable() || gotToEnd((Piece) view, t) ) {
                     removePieceFromTile((Piece) view);
                     t.setPiece((Piece) view);
                     current_tile = t;
+                    GameActivity.changeTurn();
                     return;
                 }
             }
@@ -119,7 +121,6 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     public void eat(Piece piece, Tile tile) {
-        //tile.getPiece().getStart_tile().setPiece(tile.getPiece());
         Piece eated_piece = tile.getPiece();
         removePieceFromTile(eated_piece);
         snapToTile(eated_piece, eated_piece.getStart_tile());

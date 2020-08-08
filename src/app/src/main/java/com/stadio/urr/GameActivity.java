@@ -38,8 +38,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     Piece game_piece_white;
     Piece game_piece_black;
     ImageButton roll_dice_button;
-    ImageView[] dice;
+    static ImageView[] dice;
 
+    static boolean did_roll = false;
+    static boolean whites_turn = false;
     final static int NUMBER_OF_DICE = 4;
     final static int NUMBER_OF_PIECES = 7;
     final float NUMBER_OF_TILES_ACCROSS = 8;
@@ -162,11 +164,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onWindowFocusChanged(boolean hasFocus) {
         getSizes();
-        //setDice();
         setTiles();
         setPieces(game_piece_white, whites);
         setPieces(game_piece_black, blacks);
         DragNDrop.tiles = tiles;
+        changeTurn();
     }
 
     /**
@@ -213,11 +215,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.dice_roll_button:
-                current_roll = roll_dice();
+                if (!did_roll)
+                    current_roll = rollDice();
         }
     }
 
-    private int roll_dice() {
+    private int rollDice() {
         Random random = new Random();
         int count = 0;
         for (int i = 0; i < dice.length; i++) {
@@ -230,6 +233,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 dice[i].setImageResource(R.drawable.pyramid_die_down);
             }
         }
+        did_roll = true;
+        if (count == 0) {
+            changeTurn();
+        }
         return count;
+    }
+
+    public static void resetDice() {
+        current_roll = 0;
+        for (int i = 0; i < dice.length; i++) {
+            dice[i].setImageResource(R.drawable.pyramid_die_down);
+        }
+        did_roll = false;
+    }
+
+    public static void changeTurn(){
+        GameActivity.whites_turn = !whites_turn;
+        ArrayList<Piece> turn;
+        ArrayList<Piece> not_turn;
+        if (whites_turn) {
+            turn = whites;
+            not_turn = blacks;
+        } else {
+            turn = blacks;
+            not_turn = whites;
+        }
+
+        for (Piece p : turn) {
+            p.setEnabled(true);
+        }
+
+        for (Piece p : not_turn) {
+            p.setEnabled(false);
+        }
+
+        resetDice();
     }
 }
