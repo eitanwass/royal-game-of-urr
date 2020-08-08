@@ -16,14 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.content.ContentValues.TAG;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     static RelativeLayout relativeLayout;
     ConstraintLayout constraintLayout_dice;
@@ -33,6 +35,7 @@ public class GameActivity extends AppCompatActivity {
     static ArrayList<Piece> blacks;
     Piece game_piece_white;
     Piece game_piece_black;
+    ImageButton roll_dice_button;
     ImageView[] dice;
 
     final static int NUMBER_OF_DICE = 4;
@@ -55,6 +58,8 @@ public class GameActivity extends AppCompatActivity {
 
         relativeLayout = findViewById(R.id.game_relative_layout);
         constraintLayout_dice = findViewById(R.id.constraint_layout_dice);
+        roll_dice_button = findViewById(R.id.dice_roll_button);
+        roll_dice_button.setOnClickListener(this);
         root_tile = findViewById(R.id.tile);
         game_piece_white = findViewById(R.id.piece_white);
         game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight()));
@@ -199,5 +204,30 @@ public class GameActivity extends AppCompatActivity {
                 return 0;
         }
         return 0;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.dice_roll_button:
+                roll_dice();
+        }
+    }
+
+    private int roll_dice() {
+        Random random = new Random();
+        int count = 0;
+        for (int i = 0; i < dice.length; i++) {
+            boolean up = random.nextBoolean();
+            if (up) {
+                dice[i].setImageResource(R.drawable.pyramid_die_up);
+                count++;
+            }
+            else {
+                dice[i].setImageResource(R.drawable.pyramid_die_down);
+                count++;
+            }
+        }
+        return count;
     }
 }

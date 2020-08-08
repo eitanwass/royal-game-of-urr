@@ -369,9 +369,9 @@
             android:id="@+id/dice1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+            app:layout_constraintBottom_toBottomOf="@+id/dice_roll_button"
             app:layout_constraintEnd_toStartOf="@+id/dice2"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            app:layout_constraintStart_toEndOf="@+id/dice_roll_button"
             app:layout_constraintTop_toTopOf="@+id/dice2"
             custom:srcCompat="@drawable/pyramid_die_down" />
 
@@ -403,7 +403,7 @@
             custom:srcCompat="@drawable/pyramid_die_down" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/dice_roll_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/dice_roll_button"
