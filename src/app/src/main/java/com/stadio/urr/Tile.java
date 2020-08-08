@@ -25,6 +25,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     Piece piece;
     int tile_type;
     int tile_exclusivity;
+    int index;
 
     /**
      * creates an empty Tile.
@@ -49,6 +50,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
         try {
             tile_type = a.getInt(R.styleable.Tile_type, 1);
             tile_exclusivity = a.getInt(R.styleable.Tile_exclusive_to, 2);
+            index = a.getInt(R.styleable.Tile_tile_index, 1);
         } finally {
             a.recycle();
         }

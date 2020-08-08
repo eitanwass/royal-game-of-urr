@@ -13,6 +13,7 @@
             <enum name="black" value="1"/>
             <enum name="none" value="2"/>
         </attr>
+        <attr name="tile_index" format="integer"></attr>
     </declare-styleable>
 
     <declare-styleable name="Piece">

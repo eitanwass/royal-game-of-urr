@@ -28,6 +28,7 @@ import static android.content.ContentValues.TAG;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     static RelativeLayout relativeLayout;
+    static int current_roll = 0;
     ConstraintLayout constraintLayout_dice;
     Tile root_tile;
     static ArrayList<Tile> tiles;
@@ -210,7 +211,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.dice_roll_button:
-                roll_dice();
+                current_roll = roll_dice();
         }
     }
 
@@ -225,7 +226,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
             else {
                 dice[i].setImageResource(R.drawable.pyramid_die_down);
-                count++;
             }
         }
         return count;

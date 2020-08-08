@@ -66,13 +66,26 @@ public class DragNDrop implements View.OnTouchListener {
      */
     private void snap(View view) {
         for (Tile t : tiles) {
-            if (checkInside(view, t) && !t.equals(current_tile) && t.isAvailable()) {
+            if (checkInside(view, t) && !t.equals(current_tile) && t.isAvailable() && canMove((Piece) view, t)) {
                 removePieceFromTile((Piece) view);
                 t.setPiece((Piece) view);
                 current_tile = t;
                 return;
             }
         }
+    }
+
+    private boolean canMove(Piece piece, Tile t) {
+        if (t.tile_exclusivity != piece.side && t.tile_exclusivity != Sides.NONE.getValue()){
+            return false;
+        }
+        if (t.index == 15 && findTile(piece).index + GameActivity.current_roll >= 15){
+            return true;
+        }
+        if (t.index != findTile(piece).index + GameActivity.current_roll){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -90,13 +103,18 @@ public class DragNDrop implements View.OnTouchListener {
      * @param piece: the piece we want to remove.
      */
     public void removePieceFromTile(Piece piece) {
+        findTile(piece).setPiece(null);
+    }
+
+    public Tile findTile(Piece piece) {
         for (Tile t : tiles) {
             if (t.getPiece() == null)
                 continue;
             if (t.getPiece().equals(piece)) {
-                t.setPiece(null);
+                return t;
             }
         }
+        return piece.getStart_tile();
     }
 
     /**
