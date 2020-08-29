@@ -23,14 +23,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/loginUsernameTextView"
+                android:id="@+id/loginEmailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="128dp"
                 android:text="Username:" />
 
             <EditText
-                android:id="@+id/loginUsernameEditText"
+                android:id="@+id/loginEmailEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"

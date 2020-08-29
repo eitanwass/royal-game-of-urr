@@ -33,7 +33,7 @@ public class LoginMenuActivity extends AppCompatActivity {
         }
     }
 
-    private EditText usernameEditText;
+    private EditText emailEditText;
     private EditText passwordEditText;
 
     private ProgressBar progressBar;
@@ -50,7 +50,7 @@ public class LoginMenuActivity extends AppCompatActivity {
     }
 
     private void getReferences() {
-        usernameEditText = findViewById(R.id.loginUsernameEditText);
+        emailEditText = findViewById(R.id.loginEmailEditText);
         passwordEditText = findViewById(R.id.loginPasswordEditText);
 
         progressBar = findViewById(R.id.progressBar);
@@ -82,13 +82,13 @@ public class LoginMenuActivity extends AppCompatActivity {
     }
 
     private void sendLoginData(Socket socket) {
-        String username = usernameEditText.getText().toString();
+        String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         // TODO: hash password.
 
         JSONObject emissionJson = new JSONObject();
         try {
-            emissionJson.put("username", username);
+            emissionJson.put("email", email);
             emissionJson.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();

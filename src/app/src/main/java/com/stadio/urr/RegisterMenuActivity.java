@@ -1,19 +1,15 @@
 package com.stadio.urr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -60,7 +56,7 @@ public class RegisterMenuActivity extends AppCompatActivity {
     private void getReferences() {
         repeatPasswordErrorTextView = findViewById(R.id.repeatPasswordErrorTextView);
 
-        usernameEditText = findViewById(R.id.loginUsernameEditText);
+        usernameEditText = findViewById(R.id.loginEmailEditText);
         emailEditText = findViewById(R.id.registerEmailEditText);
         passwordEditText = findViewById(R.id.loginPasswordEditText);
         repeatPasswordEditText = findViewById(R.id.registerRepeatPasswordEditText);
