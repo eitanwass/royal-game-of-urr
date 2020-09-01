@@ -249,6 +249,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static void changeTurn(){
+
         GameActivity.whites_turn = !whites_turn;
         ArrayList<Piece> turn;
         ArrayList<Piece> not_turn;
@@ -268,6 +269,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             p.setEnabled(false);
         }
 
+        resetDice();
+    }
+
+    public static boolean checkSpecial(Tile t) {
+        return (t.tile_type == Attributes.ANOTHER_TURN.getValue() || t.tile_type == Attributes.INVINCIBILITY.getValue());
+    }
+
+
+    public static void anotherTurn() {
         resetDice();
     }
 }

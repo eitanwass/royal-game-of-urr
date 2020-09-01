@@ -12,25 +12,15 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DragNDrop implements View.OnTouchListener {
-    float width;
-    float height;
-    int soft_buttons_height;
     static ArrayList<Tile> tiles;
     static Tile current_tile;
     boolean first = true;
-    int ALPHA = 50;
     Piece ghost_piece;
 
     /**
      * Initializes a DragNDrop object.
-     * @param width: the width of the screen in pixels.
-     * @param height: the height of the screen in piexels.
-     * @param soft_buttons_height: the height of the soft buttons.
      */
-    public DragNDrop(float width, float height, int soft_buttons_height, Piece ghost_piece) {
-        this.width = width;
-        this.height = height;
-        this.soft_buttons_height = soft_buttons_height;
+    public DragNDrop(Piece ghost_piece) {
         this.ghost_piece = ghost_piece;
     }
 
@@ -42,10 +32,10 @@ public class DragNDrop implements View.OnTouchListener {
      */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (first) {
+        /*if (first) {
             this.current_tile = ((Piece) view).getStart_tile();
             first = false;
-        }
+        }*/
         current_tile = findTile((Piece) view);
         final float x = motionEvent.getRawX();
         final float y = motionEvent.getRawY();
@@ -62,9 +52,7 @@ public class DragNDrop implements View.OnTouchListener {
                 view.setY(y - ((Piece) view).dy);
                 break;
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouch: curernt tile" + current_tile);
                 snap(view);
-                Log.d(TAG, "onTouch: curernt tile" + current_tile);
                 snapToTile(view, current_tile);
                 ghost_piece.setVisibility(View.INVISIBLE);
                 break;
@@ -113,6 +101,10 @@ public class DragNDrop implements View.OnTouchListener {
                     removePieceFromTile((Piece) view);
                     t.setPiece((Piece) view);
                     current_tile = t;
+                    if(GameActivity.checkSpecial(t)){
+                        GameActivity.anotherTurn();
+                        return;
+                    }
                     GameActivity.changeTurn();
                     return;
                 }
@@ -120,6 +112,11 @@ public class DragNDrop implements View.OnTouchListener {
         }
     }
 
+    /**
+     * Eat a tile that is on a piece and send it back to start.
+     * @param piece: the piece that moves.
+     * @param tile: the tile we want to move onto.
+     */
     public void eat(Piece piece, Tile tile) {
         Piece eated_piece = tile.getPiece();
         removePieceFromTile(eated_piece);
@@ -129,6 +126,12 @@ public class DragNDrop implements View.OnTouchListener {
         current_tile = tile;
     }
 
+    /**
+     * Checks if a piece can move to a certain tile.
+     * @param piece: The piece we want to move.
+     * @param t: the tile we want to move to.
+     * @return: true if it is possible to move to false if not.
+     */
     private boolean canMove(Piece piece, Tile t) {
         if (t.tile_exclusivity != piece.side && t.tile_exclusivity != Sides.NONE.getValue()){
             return false;
@@ -139,9 +142,18 @@ public class DragNDrop implements View.OnTouchListener {
         if (t.index != findTile(piece).index + GameActivity.current_roll){
             return false;
         }
+        if (t.tile_type == Attributes.INVINCIBILITY.getValue() && !t.isAvailable()) {
+            return false;
+        }
         return true;
     }
 
+    /**
+     * Checks if 11a piece got to the end of the board.
+     * @param piece: the piece that moves.
+     * @param t: the tile we want to check if it's the last.
+     * @return: true if last false if not.
+     */
     private boolean gotToEnd(Piece piece, Tile t) {
         return (t.index == 15 && findTile(piece).index + GameActivity.current_roll >= 15);
     }
