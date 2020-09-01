@@ -93,11 +93,11 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
         }
     }
 
-    public void setStart_tile(Tile start_tile) {
+    public void setStartTile(Tile start_tile) {
         this.start_tile = start_tile;
     }
 
-    public Tile getStart_tile() {
+    public Tile getStartTile() {
         return start_tile;
     }
 }
