@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -139,6 +138,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 int tileSizePixels = (int) convertDpToPixel((int) tileSize, getApplicationContext());
                 childViewLayoutParams.height = childViewLayoutParams.width = tileSizePixels;
                 childView.setLayoutParams(childViewLayoutParams);
+                if (childView.getId() == R.id.start_white) {
+                    ((Tile) childView).setPiece(gamePieceWhite);
+                }else if (childView.getId() == R.id.start_black) {
+                    ((Tile) childView).setPiece(gamePieceBlack);
+                }
                 tiles.add((Tile) childView);
             }
         }
@@ -296,6 +300,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         resetDice();
+        if (checkWin(whitesTurn ? Sides.BLACK : Sides.WHITE)) {
+            Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
+        }
+
+    }
+
+    private static boolean checkWin(Sides side) {
+        for (Tile tile : tiles) {
+            if (tile.index != PATH_LENGTH && !tile.isAvailable()) {
+                if (tile.piece.side == side.getValue()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
