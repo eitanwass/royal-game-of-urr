@@ -98,4 +98,23 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     public boolean canLand(int colorSide) {
         return this.tile_exclusivity == colorSide || this.tile_exclusivity == Sides.NONE.getValue();
     }
+
+    /**
+     * Checks if the tile grants another turn.
+     *
+     * @return True if grants another turn false if not.
+     */
+    public boolean isAnotherTurn() {
+        return this.tile_type == Attributes.ANOTHER_TURN.getValue() ||
+                this.tile_type == Attributes.INVINCIBILITY.getValue();
+    }
+
+    /**
+     * Checks if this tile grants invincibility.
+     *
+     * @return True if grants invincibility false if not.
+     */
+    public boolean isInvincible() {
+        return this.tile_type == Attributes.INVINCIBILITY.getValue();
+    }
 }

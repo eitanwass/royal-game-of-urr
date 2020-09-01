@@ -46,8 +46,8 @@ public class DragNDrop implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN:
                 selectedPiece.dx = mouseX - selectedPiece.getX();
                 selectedPiece.dy = mouseY - selectedPiece.getY();
-                relativeLayout.bringChildToFront(selectedPiece);
                 setGhost(selectedPiece);
+                relativeLayout.bringChildToFront(selectedPiece);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -73,6 +73,9 @@ public class DragNDrop implements View.OnTouchListener {
     private void setGhost(Piece piece) {
         Tile destinationTile = getTileByRoll(piece);
         relativeLayout.bringChildToFront(ghostPiece);
+        if ((destinationTile.isInvincible() && destinationTile.isInvincible())) {
+            relativeLayout.bringChildToFront(destinationTile.piece);
+        }
 
         int piece_image = piece.side == Sides.WHITE.getValue() ?
                 R.drawable.piece_white :
@@ -124,12 +127,21 @@ public class DragNDrop implements View.OnTouchListener {
                     }
                     return startingTile;
                 }
+
+                if (destinationTile.isInvincible()) {
+                    return startingTile;
+                }
                 eat(destinationTile);
             }
 
             removePieceFromTile(startingTile);
             destinationTile.setPiece(piece);
-            GameActivity.changeTurn();
+            if (destinationTile.isAnotherTurn()) {
+                GameActivity.anotherTurn();
+            }
+            else {
+                GameActivity.changeTurn();
+            }
             return destinationTile;
         }
         return startingTile;

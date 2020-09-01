@@ -61,7 +61,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return currentRoll;
     }
 
-
     /* --Methods-- */
 
     @Override
@@ -296,6 +295,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             p.setEnabled(false);
         }
 
+        resetDice();
+    }
+
+    /**
+     * Gives another turn to the current turn holder.
+     */
+    public static void anotherTurn() {
         resetDice();
     }
 }
