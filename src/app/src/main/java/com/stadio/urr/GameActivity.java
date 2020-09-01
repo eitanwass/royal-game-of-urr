@@ -6,119 +6,139 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.WindowInsets;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static android.content.ContentValues.TAG;
-
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    static RelativeLayout relativeLayout;
-    static int current_roll = 0;
-    ConstraintLayout constraintLayout_dice;
-    Tile root_tile;
-    static ArrayList<Tile> tiles;
-    static ArrayList<Piece> whites;
-    static ArrayList<Piece> blacks;
-    Piece game_piece_white;
-    Piece game_piece_black;
-    ImageButton roll_dice_button;
-    static ImageView[] dice;
+    /* --View Variables-- */
+    private RelativeLayout relativeLayout;
+    private ConstraintLayout constraintLayoutDice;
 
-    static boolean did_roll = false;
-    static boolean whites_turn = false;
-    final static int NUMBER_OF_DICE = 4;
-    final static int NUMBER_OF_PIECES = 7;
-    final float NUMBER_OF_TILES_ACCROSS = 8;
-    final float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
-    final float TILE_PRECENT = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_ACCROSS;
-    final float PIECE_PRECENT = (float) (TILE_PRECENT * 0.75);
-    float width_dp;
-    float height_dp;
-    static float width_px;
-    static float height_px;
-    static int soft_buttons_height;
+    private Tile rootTile;
+
+    private static int currentRoll = 0;
+
+    private static ArrayList<Tile> tiles;
+    private static ArrayList<Piece> whitePieces;
+    private static ArrayList<Piece> blackPieces;
+    private Piece gamePieceWhite;
+    private Piece gamePieceBlack;
+    private static ImageView[] dice;
+
+    private static boolean didRoll = false;
+    private static boolean whitesTurn = false;
+
+    private float width_dp;
+    private float height_dp;
+
+
+    /* --Constants-- */
+
+    private final static int NUMBER_OF_DICE = 4;
+    private final static int NUMBER_OF_PIECES = 7;
+    private final static float NUMBER_OF_TILES_HORIZONTAL = 8;
+    private final static float NUMBER_OF_TILES_VERTICAL = 3;
+    public final static int PATH_LENGTH = 15;
+
+    private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
+    private final static float TILE_PERCENT_OF_SCREEN = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_HORIZONTAL;
+    private final static float PIECE_PERCENTAGE_FROM_TILE = 0.75f;
+
+
+    /* --Getters and Setters-- */
+
+    public static int getCurrentRoll() {
+        return currentRoll;
+    }
+
+
+    /* --Methods-- */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_game);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
 
         relativeLayout = findViewById(R.id.game_relative_layout);
-        constraintLayout_dice = findViewById(R.id.constraint_layout_dice);
-        roll_dice_button = findViewById(R.id.dice_roll_button);
-        roll_dice_button.setOnClickListener(this);
-        root_tile = findViewById(R.id.tile);
-        game_piece_white = findViewById(R.id.piece_white);
-        game_piece_white.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
-        game_piece_white.setStart_tile((Tile) findViewById(R.id.start_white));
-        game_piece_black = findViewById(R.id.piece_black);
-        game_piece_black.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
-        game_piece_black.setStart_tile((Tile) findViewById(R.id.start_black));
+        constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
+        rootTile = findViewById(R.id.tile);
+        findViewById(R.id.dice_roll_button).setOnClickListener(this);
+
+        gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
+        gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
+
+        tiles = new ArrayList<>();
+        whitePieces = new ArrayList<>();
+        blackPieces = new ArrayList<>();
 
         dice = new ImageView[NUMBER_OF_DICE];
         dice[0] = findViewById(R.id.dice1);
         dice[1] = findViewById(R.id.dice2);
         dice[2] = findViewById(R.id.dice3);
         dice[3] = findViewById(R.id.dice4);
-        tiles = new ArrayList<>();
-        whites = new ArrayList<>();
-        blacks = new ArrayList<>();
     }
 
     /**
-     * Sets the width and height of the screen.
-     * both in pixels and dp.
+     * Create a piece by its ID and start location ID.
+     *
+     * @param pieceId The ID of the piece to create.
+     * @param startId The ID of the starting tile.
+     * @return The newly created piece.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private Piece createPiece(int pieceId, int startId) {
+        Piece piece = findViewById(pieceId);
+        piece.setOnTouchListener(new DragNDrop((Piece) findViewById(R.id.ghost_piece), relativeLayout));
+        piece.setStartTile((Tile) findViewById(startId));
+        return piece;
+    }
+
+    /**
+     * Gets the width and height of the screen in DP.
      */
     public void getSizes(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        width_px = size.x;
-        height_px = size.y;
-        width_dp = convertPixelsToDp(width_px, getApplicationContext());
-        height_dp = convertPixelsToDp(height_px, getApplicationContext());
-        soft_buttons_height = getSoftButtonsBarHeight();
+
+        width_dp = convertPixelsToDp(size.x, getApplicationContext());
+        height_dp = convertPixelsToDp(size.y, getApplicationContext());
     }
 
     /**
-     * Sets the tile array list.
-     * That includes sizes and positioning.
+     * Creates the tiles and sets their position and scale relative to the screen and the root tile.
      */
-    public void setTiles(){
-        float dice_height = constraintLayout_dice.getHeight();
-        float tile_size = (width_dp) * TILE_PRECENT;
-        float margin_bottom = convertDpToPixel((height_dp - dice_height - tile_size * 3) / 2, getApplicationContext());
-        //Log.d(TAG, "setTiles: dice height: " + dice_height);
-        Log.d(TAG, "setTiles: tile_size: " + tile_size);
-        Log.d(TAG, "setTiles: margin bottom: " + margin_bottom);
-        float margin_right = convertDpToPixel((width_dp - tile_size * 8) / 2, getApplicationContext());
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) root_tile.getLayoutParams();
-        params.setMargins(0, 0, (int) margin_right, (int) margin_bottom);
-        root_tile.setLayoutParams(params);
+    public void setTiles() {
+        float diceHeight = constraintLayoutDice.getHeight();
+        float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
+        float marginBottom = convertDpToPixel(
+                (height_dp - diceHeight - tileSize * NUMBER_OF_TILES_VERTICAL) / 2, getApplicationContext());
+        float margin_right = convertDpToPixel(
+                (width_dp - tileSize * NUMBER_OF_TILES_HORIZONTAL) / 2, getApplicationContext());
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rootTile.getLayoutParams();
+        params.setMargins(0, 0, (int) margin_right, (int) marginBottom);
+        rootTile.setLayoutParams(params);
 
         for (int i = 0; i < relativeLayout.getChildCount(); i++) {
             View childView = relativeLayout.getChildAt(i);
             if (childView instanceof Tile) {
                 RelativeLayout.LayoutParams childViewLayoutParams = (RelativeLayout.LayoutParams) childView.getLayoutParams();
-                childViewLayoutParams.height = (int) convertDpToPixel((int) tile_size, getApplicationContext());
-                childViewLayoutParams.width = (int) convertDpToPixel((int) tile_size, getApplicationContext());
+                int tileSizePixels = (int) convertDpToPixel((int) tileSize, getApplicationContext());
+                childViewLayoutParams.height = childViewLayoutParams.width = tileSizePixels;
                 childView.setLayoutParams(childViewLayoutParams);
                 tiles.add((Tile) childView);
             }
@@ -127,55 +147,70 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Sets an array list of all the pieces from a certain side.
+     *
      * @param piece: the piece we want to duplicate.
      * @param pieces: the array list we want to keep all the pieces in.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void setPieces(Piece piece, ArrayList<Piece> pieces) {
-        float piece_size = width_dp * PIECE_PRECENT;
+        float piecePercentOfScreen = (float) (TILE_PERCENT_OF_SCREEN * PIECE_PERCENTAGE_FROM_TILE);
+        float pieceSize = width_dp * piecePercentOfScreen;
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
-        layoutParams.height = (int) convertDpToPixel((int) piece_size, getApplicationContext());
-        layoutParams.width = (int) convertDpToPixel((int) piece_size, getApplicationContext());
-        RelativeLayout.LayoutParams layoutParams_tile = (RelativeLayout.LayoutParams) piece.getStart_tile().getLayoutParams();
+        int pieceSizePixels = (int) convertDpToPixel((int) pieceSize, getApplicationContext());
+        layoutParams.height = layoutParams.width = pieceSizePixels;
+        RelativeLayout.LayoutParams layoutParams_tile = (RelativeLayout.LayoutParams) piece.getStartTile().getLayoutParams();
+
+        boolean isThisWhite = piece.side == Sides.WHITE.getValue();
+        int marginFromEdge = (layoutParams_tile.height - layoutParams.height) / 2;
+
         int leftMargin = (layoutParams_tile.width - layoutParams.width) / 2;
-        int topMargin = 0;
-        int bottomMargin = 0;
-        if (piece.side == Sides.WHITE.getValue()) {
-            topMargin = (layoutParams_tile.height - layoutParams.height) / 2;
-        } else {
-            bottomMargin = (layoutParams_tile.height - layoutParams.height) / 2;
-        }
+        int topMargin = isThisWhite ? marginFromEdge : 0;
+        int bottomMargin = isThisWhite ? 0 : marginFromEdge;
+
         layoutParams.setMargins(leftMargin, topMargin, 0, bottomMargin);
-        piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
+        piece.setOnTouchListener(new DragNDrop((Piece) findViewById(R.id.ghost_piece), relativeLayout));
 
         pieces.add(piece);
         piece.invalidate();
 
         for (int i = 0; i < NUMBER_OF_PIECES - 1; i++) {
-            Piece temp_piece = new Piece(piece);
-            temp_piece.setLayoutParams(new RelativeLayout.LayoutParams(layoutParams));
-            temp_piece.setOnTouchListener(new DragNDrop(width_px, height_px, getSoftButtonsBarHeight(), (Piece) findViewById(R.id.ghost_piece)));
-            pieces.add(temp_piece);
-            temp_piece.setVisibility(View.VISIBLE);
-            temp_piece.invalidate();
-            relativeLayout.addView(temp_piece);
+            Piece duplicatePiece = new Piece(piece);
+
+            duplicatePiece.setLayoutParams(new RelativeLayout.LayoutParams(layoutParams));
+            duplicatePiece.setOnTouchListener(new DragNDrop((Piece) findViewById(R.id.ghost_piece), relativeLayout));
+
+            pieces.add(duplicatePiece);
+
+            duplicatePiece.setVisibility(View.VISIBLE);
+            duplicatePiece.invalidate();
+
+            relativeLayout.addView(duplicatePiece);
         }
         relativeLayout.invalidate();
     }
 
+    /**
+     * Set up sizes, tiles, pieces, and start the game.
+     * Happens after onCreate.
+     *
+     * @param hasFocus Does the window have focus.
+     */
     public void onWindowFocusChanged(boolean hasFocus) {
         getSizes();
         setTiles();
-        setPieces(game_piece_white, whites);
-        setPieces(game_piece_black, blacks);
+        setPieces(gamePieceWhite, whitePieces);
+        setPieces(gamePieceBlack, blackPieces);
         DragNDrop.tiles = tiles;
         changeTurn();
     }
 
     /**
      * Converts pixels to dp.
-     * @param px: the size in pixels.
-     * @param context: the context we're in.
-     * @return: the result of the conversion.
+     *
+     * @param px the size in pixels.
+     * @param context the context we're in.
+     * @return the result of the conversion.
      */
     public static float convertPixelsToDp(float px, Context context) {
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
@@ -183,88 +218,81 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Converts pixels to dp.
-     * @param dp: the size in dp.
-     * @param context: the context we're in.
-     * @return: the result of the conversion.
+     * @param dp the size in dp.
+     * @param context the context we're in.
+     * @return the result of the conversion.
      */
     public static float convertDpToPixel(float dp, Context context){
         return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     /**
-     * @return: Returns the height of the soft button.
+     * Happens onClick of this object.
+     * Rolls the dice if that button was hit.
+     *
+     * @param view The view that was clicked on.
      */
-    @SuppressLint("NewApi")
-    private int getSoftButtonsBarHeight() {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int usableHeight = metrics.heightPixels;
-            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-            int realHeight = metrics.heightPixels;
-            if (realHeight > usableHeight)
-                return realHeight - usableHeight;
-            else
-                return 0;
-        }
-        return 0;
-    }
-
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.dice_roll_button:
-                if (!did_roll)
-                    current_roll = rollDice();
+        if (view.getId() == R.id.dice_roll_button) {
+            if (!didRoll)
+                currentRoll = rollDice();
         }
     }
 
+    /**
+     * Roll the dice and count the sum of the dice.
+     *
+     * @return The sum of the dice.
+     */
     private int rollDice() {
         Random random = new Random();
+        int dieUpId = R.drawable.pyramid_die_up;
+        int dieDownId = R.drawable.pyramid_die_down;
         int count = 0;
-        for (int i = 0; i < dice.length; i++) {
-            boolean up = random.nextBoolean();
-            if (up) {
-                dice[i].setImageResource(R.drawable.pyramid_die_up);
-                count++;
-            }
-            else {
-                dice[i].setImageResource(R.drawable.pyramid_die_down);
-            }
+        int cur = 0;
+
+        for (ImageView die : dice) {
+            cur = random.nextInt(2);
+            count += cur;
+            die.setImageResource(cur == 1 ? dieUpId : dieDownId);
         }
-        did_roll = true;
+        Log.d("INFO", "rollDice: count=" + count);
+        didRoll = true;
         if (count == 0) {
             changeTurn();
         }
         return count;
     }
 
+    /**
+     * Reset the dice to be all down, and enable re-rolling.
+     */
     public static void resetDice() {
-        current_roll = 0;
-        for (int i = 0; i < dice.length; i++) {
-            dice[i].setImageResource(R.drawable.pyramid_die_down);
+        currentRoll = 0;
+        for (ImageView die : dice) {
+            die.setImageResource(R.drawable.pyramid_die_down);
         }
-        did_roll = false;
+        didRoll = false;
     }
 
+    /**
+     * Change the turn to the other person.
+     * Enable the new person's pieces and the disable the others.
+     * Reset the dice.
+     */
     public static void changeTurn(){
-        GameActivity.whites_turn = !whites_turn;
-        ArrayList<Piece> turn;
-        ArrayList<Piece> not_turn;
-        if (whites_turn) {
-            turn = whites;
-            not_turn = blacks;
-        } else {
-            turn = blacks;
-            not_turn = whites;
-        }
+        GameActivity.whitesTurn = !whitesTurn;
+
+        Log.d("INFO", "changeTurn: cur turn=" + (GameActivity.whitesTurn ? "whites" : "blacks"));
+        ArrayList<Piece> turn = whitesTurn ? whitePieces : blackPieces;
+        ArrayList<Piece> notTurn = whitesTurn ? blackPieces : whitePieces;
 
         for (Piece p : turn) {
             p.setEnabled(true);
         }
 
-        for (Piece p : not_turn) {
+        for (Piece p : notTurn) {
             p.setEnabled(false);
         }
 

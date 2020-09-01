@@ -1,155 +1,170 @@
 package com.stadio.urr;
 
-import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.annotation.SuppressLint;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowInsets;
 import android.widget.RelativeLayout;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
+/**
+ * Implements the Drag and Drop mechanism for moving the pieces on the board.
+ */
 public class DragNDrop implements View.OnTouchListener {
-    float width;
-    float height;
-    int soft_buttons_height;
-    static ArrayList<Tile> tiles;
-    static Tile current_tile;
-    boolean first = true;
-    int ALPHA = 50;
-    Piece ghost_piece;
+    // TEMPORARY SOLUTION.
+    private RelativeLayout relativeLayout;
+
+    public static ArrayList<Tile> tiles;
+    private Piece ghostPiece;
 
     /**
      * Initializes a DragNDrop object.
-     * @param width: the width of the screen in pixels.
-     * @param height: the height of the screen in piexels.
-     * @param soft_buttons_height: the height of the soft buttons.
      */
-    public DragNDrop(float width, float height, int soft_buttons_height, Piece ghost_piece) {
-        this.width = width;
-        this.height = height;
-        this.soft_buttons_height = soft_buttons_height;
-        this.ghost_piece = ghost_piece;
+    public DragNDrop(Piece ghostPiece, RelativeLayout relativeLayout) {
+        this.ghostPiece = ghostPiece;
+        this.relativeLayout = relativeLayout;
     }
 
     /**
      * Overrides the onTouch method.
-     * @param view: the view we want to move.
-     * @param motionEvent: What happend.
-     * @return: returns true if handled false if not.
+     *
+     * @param selectedView: the piece we want to move.
+     * @param motionEvent:  What happened.
+     * @return returns true if handled false if not.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (first) {
-            this.current_tile = ((Piece) view).getStart_tile();
-            first = false;
-        }
-        current_tile = findTile((Piece) view);
-        final float x = motionEvent.getRawX();
-        final float y = motionEvent.getRawY();
+    public boolean onTouch(View selectedView, MotionEvent motionEvent) {
+        Piece selectedPiece = (Piece) selectedView;
+        Tile startingTile = findTile(selectedPiece);
+
+        final float mouseX = motionEvent.getRawX();
+        final float mouseY = motionEvent.getRawY();
 
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                ((Piece) view).dx = x - view.getX();
-                ((Piece) view).dy = y - view.getY();
-                GameActivity.relativeLayout.bringChildToFront(view);
-                setGhost((Piece) view);
+                selectedPiece.dx = mouseX - selectedPiece.getX();
+                selectedPiece.dy = mouseY - selectedPiece.getY();
+                relativeLayout.bringChildToFront(selectedPiece);
+                setGhost(selectedPiece);
                 break;
+
             case MotionEvent.ACTION_MOVE:
-                view.setX(x - ((Piece) view).dx);
-                view.setY(y - ((Piece) view).dy);
+                selectedPiece.setX(mouseX - selectedPiece.dx);
+                selectedPiece.setY(mouseY - selectedPiece.dy);
                 break;
+
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouch: curernt tile" + current_tile);
-                snap(view);
-                Log.d(TAG, "onTouch: curernt tile" + current_tile);
-                snapToTile(view, current_tile);
-                ghost_piece.setVisibility(View.INVISIBLE);
+                Tile newTile = getNewTile(selectedPiece, startingTile);
+                ghostPiece.setVisibility(View.INVISIBLE);
+                snapToTile(selectedPiece, newTile);
                 break;
         }
-        view.invalidate();
+        selectedPiece.invalidate();
         return true;
-    }
-
-    private void setGhost(Piece piece) {
-        int index = findTile(piece).index + GameActivity.current_roll;
-        if (index > 15) {
-            index = 15;
-        }
-        GameActivity.relativeLayout.bringChildToFront(ghost_piece);
-        Tile ghost_piece_tile = getTileByIndex(index, piece.side);
-        if (piece.side == Sides.WHITE.getValue()){
-            ghost_piece.setImageResource(R.drawable.piece_white);
-        } else {
-            ghost_piece.setImageResource(R.drawable.piece_black);
-        }
-        snapToTile(ghost_piece, ghost_piece_tile);
-        ghost_piece.setVisibility(View.VISIBLE);
-    }
-
-    private Tile getTileByIndex(int index, int side) {
-        for (Tile t : tiles) {
-            if (t.index == index && (t.tile_exclusivity == side || t.tile_exclusivity == Sides.NONE.getValue())) {
-                return t;
-            }
-        }
-        return null;
     }
 
     /**
-     * Snap the view into a tile.
-     * @param view: the view we want to snap.
+     * Create a ghost piece in places that the currently selected piece can go.
+     *
+     * @param piece The currently selected piece.
      */
-    private void snap(View view) {
-        for (Tile t : tiles) {
-            if (checkInside(view, t) && !t.equals(current_tile) && canMove((Piece) view, t)) {
-                if (!t.isAvailable() && t.getPiece().side != ((Piece)view).side) {
-                    eat((Piece) view, t);
-                    GameActivity.changeTurn();
-                }
-                else if(t.isAvailable() || gotToEnd((Piece) view, t) ) {
-                    removePieceFromTile((Piece) view);
-                    t.setPiece((Piece) view);
-                    current_tile = t;
-                    GameActivity.changeTurn();
-                    return;
-                }
+    private void setGhost(Piece piece) {
+        Tile destinationTile = getTileByRoll(piece);
+        relativeLayout.bringChildToFront(ghostPiece);
+
+        int piece_image = piece.side == Sides.WHITE.getValue() ?
+                R.drawable.piece_white :
+                R.drawable.piece_black;
+        ghostPiece.setImageResource(piece_image);
+
+        snapToTile(ghostPiece, destinationTile);
+        ghostPiece.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Get tile by its index and the color of pieces that can land on it.
+     *
+     * @param tileIndex The index of the tile.
+     * @param colorSide The color of the pieces that can land on it.
+     * @return The tile in question.
+     * @throws InvalidParameterException If a tile doesn't exist for the provided index and color side.
+     */
+    private Tile getTileByIndex(int tileIndex, int colorSide) {
+        for (Tile tile : tiles) {
+            if (tile.index == tileIndex && tile.canLand(colorSide)) {
+                return tile;
             }
         }
+        throw new InvalidParameterException("Index parameter is out of range for the provided color");
     }
 
-    public void eat(Piece piece, Tile tile) {
-        Piece eated_piece = tile.getPiece();
-        removePieceFromTile(eated_piece);
-        snapToTile(eated_piece, eated_piece.getStart_tile());
-        removePieceFromTile(piece);
-        tile.setPiece(piece);
-        current_tile = tile;
+    /**
+     * Get the tile the piece will be dropped into.
+     *
+     * @param piece the piece we are moving.
+     * @param startingTile The tile the piece started from.
+     * @return The new tile we moved to.
+     */
+    private Tile getNewTile(Piece piece, Tile startingTile) {
+        Tile destinationTile = getTileByRoll(piece);
+
+        if (checkInside(piece, destinationTile)) {
+
+            if (!destinationTile.isAvailable()) {
+
+                if (destinationTile.getPiece().side == (piece).side) {
+
+                    if(destinationTile.index == GameActivity.PATH_LENGTH) {
+                        removePieceFromTile(startingTile);
+                        destinationTile.setPiece(piece);
+                        GameActivity.changeTurn();
+                        return destinationTile;
+                    }
+                    return startingTile;
+                }
+                eat(destinationTile);
+            }
+
+            removePieceFromTile(startingTile);
+            destinationTile.setPiece(piece);
+            GameActivity.changeTurn();
+            return destinationTile;
+        }
+        return startingTile;
     }
 
-    private boolean canMove(Piece piece, Tile t) {
-        if (t.tile_exclusivity != piece.side && t.tile_exclusivity != Sides.NONE.getValue()){
-            return false;
-        }
-        if (gotToEnd(piece, t)){
-            return true;
-        }
-        if (t.index != findTile(piece).index + GameActivity.current_roll){
-            return false;
-        }
-        return true;
+    /**
+     * Remove the piece from the provided tile back to its owner's start.
+     *
+     * @param newTile The tile to move to remove.
+     */
+    public void eat(Tile newTile) {
+        Piece eatenPiece = newTile.getPiece();
+
+        removePieceFromTile(newTile);
+        snapToTile(eatenPiece, eatenPiece.getStartTile());
     }
 
-    private boolean gotToEnd(Piece piece, Tile t) {
-        return (t.index == 15 && findTile(piece).index + GameActivity.current_roll >= 15);
+    /**
+     * Get the next tile possible from a piece and the dice roll.
+     *
+     * @param piece The piece to check the new tile from.
+     * @return The new tile the piece move to.
+     */
+    private Tile getTileByRoll(Piece piece) {
+        int possibleTileIndex = findTile(piece).index + GameActivity.getCurrentRoll();
+        possibleTileIndex = Math.min(possibleTileIndex, GameActivity.PATH_LENGTH);
+
+        return getTileByIndex(possibleTileIndex, piece.side);
     }
 
     /**
      * Does the actual snapping.
-     * @param view: the view we want to snap.
-     * @param tile: the tile we want to snap into.
+     *
+     * @param view the view we want to snap.
+     * @param tile the tile we want to snap into.
      */
     public static void snapToTile(View view, Tile tile) {
         view.setX(tile.getX() + (int) ((tile.getWidth() - view.getWidth()) / 2));
@@ -158,33 +173,46 @@ public class DragNDrop implements View.OnTouchListener {
 
     /**
      * Removes a piece from a tile.
-     * @param piece: the piece we want to remove.
+     *
+     * @param tile the piece we want to remove.
      */
-    public void removePieceFromTile(Piece piece) {
-        findTile(piece).setPiece(null);
+    public void removePieceFromTile(Tile tile) {
+        tile.setPiece(null);
     }
 
+    /**
+     * Find the tile that contains the provided piece.
+     * If no tile contains the piece, return the home "tile".
+     *
+     * @param piece The game piece we want to find the tile of.
+     * @return The tile that contained the game piece.
+     */
     public Tile findTile(Piece piece) {
-        for (Tile t : tiles) {
-            if (t.getPiece() == null)
+        for (Tile tile : tiles) {
+            if (tile.getPiece() == null)
                 continue;
-            if (t.getPiece().equals(piece)) {
-                return t;
+            if (tile.getPiece().equals(piece)) {
+                return tile;
             }
         }
-        return piece.getStart_tile();
+        return piece.getStartTile();
     }
 
     /**
      * Checks if a view is inside a certain tile (used for snapping).
-     * @param view: the view we want to check.
-     * @param tile: the tile we want to check if it's in.
-     * @return: returns true if it is, false if not.
+     *
+     * @param view the view we want to check.
+     * @param tile the tile we want to check if it's in.
+     * @return Returns whether the view is inside the tile.
      */
     public boolean checkInside(View view, Tile tile) {
-        float middleX = view.getX() + view.getHeight() / 2;
-        float middleY = view.getY() + view.getHeight() / 2;
-        return (middleX < tile.getX() + tile.getWidth() && middleX > tile.getX() &&
-            middleY < tile.getY() + tile.getHeight() && middleY > tile.getY());
+        float middleX = view.getX() + (float) view.getWidth() / 2;
+        float middleY = view.getY() + (float) view.getHeight() / 2;
+
+        return (
+                middleX < tile.getX() + tile.getWidth() && middleX > tile.getX()
+                &&
+                middleY < tile.getY() + tile.getHeight() && middleY > tile.getY()
+        );
     }
 }

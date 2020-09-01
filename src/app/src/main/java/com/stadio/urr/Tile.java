@@ -88,4 +88,14 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     public boolean isAvailable(){
         return piece == null;
     }
+
+    /**
+     * Can this color side piece land on this tile.
+     *
+     * @param colorSide The side of the piece, black or white.
+     * @return Whether the piece can land on this tile.
+     */
+    public boolean canLand(int colorSide) {
+        return this.tile_exclusivity == colorSide || this.tile_exclusivity == Sides.NONE.getValue();
+    }
 }
