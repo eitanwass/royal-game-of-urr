@@ -6,14 +6,15 @@ import android.util.AttributeSet;
 
 import org.xmlpull.v1.XmlPullParser;
 
-enum Attributes{
-    NORMAL (0),
-    ANOTHER_TURN (1),
-    INVINCIBILITY (2),
+enum Attributes {
+    NORMAL(0),
+    ANOTHER_TURN(1),
+    INVINCIBILITY(2),
     START(4),
     END(8);
 
     private final int value;
+
     private Attributes(int value) {
         this.value = value;
     }
@@ -34,6 +35,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
 
     /**
      * creates an empty Tile.
+     *
      * @param context: the context in which this tile exists.
      */
     public Tile(Context context) {
@@ -42,8 +44,9 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
 
     /**
      * Creates a tile with attributes.
+     *
      * @param context: the context in which the tile exists.
-     * @param attrs: the attributes the tile has.
+     * @param attrs:   the attributes the tile has.
      */
     public Tile(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,7 +57,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
 
         try {
             tileType = attributes.getInt(R.styleable.Tile_type, 0);
-            tileExclusivity = attributes.getInt(R.styleable.Tile_exclusive_to, 0);
+            tileExclusivity = attributes.getInt(R.styleable.Tile_exclusive_to, 3);
             index = attributes.getInt(R.styleable.Tile_tile_index, 1);
         } finally {
             attributes.recycle();
@@ -67,7 +70,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
         } else if (tileType == Attributes.INVINCIBILITY.getValue()) {
             this.setImageResource(R.drawable.invincibility_tile);
         } else {
-          this.setImageResource(0);
+            this.setImageResource(0);
         }
     }
 
@@ -98,9 +101,10 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
 
     /**
      * Checks if the tile is available.
+     *
      * @return if the tile is available return true, else return false.
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return piece == null;
     }
 
@@ -111,7 +115,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
      * @return Whether the piece can land on this tile.
      */
     public boolean canLand(int colorSide) {
-        return this.tileExclusivity == colorSide || this.tileExclusivity == Sides.NONE.getValue();
+        return (this.tileExclusivity|colorSide) == this.tileExclusivity;
     }
 
     /**

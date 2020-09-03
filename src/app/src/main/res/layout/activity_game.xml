@@ -113,7 +113,7 @@
         app:tile_index="4"
         custom:exclusive_to="black"
         custom:layout_constraintEnd_toStartOf="@+id/tile6"
-        custom:type="another_turn"/>
+        custom:type="another_turn" />
 
     <com.stadio.urr.Tile
         android:id="@+id/tile8"

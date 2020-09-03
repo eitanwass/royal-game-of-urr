@@ -6,9 +6,8 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 enum Sides{
-    WHITE (0),
-    BLACK (1),
-    NONE (2);
+    WHITE (1),
+    BLACK (2);
 
     private final int value;
     private Sides(int value) {

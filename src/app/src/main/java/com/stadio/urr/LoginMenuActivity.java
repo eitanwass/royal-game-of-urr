@@ -108,6 +108,8 @@ public class LoginMenuActivity extends AppCompatActivity {
 
     private void StartGame() {
         LOGGER.log(Level.INFO, "Start game in online mode.");
+        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
+        startActivity(gameStartActivity);
     }
 
     public void switchToRegisterMenu(View view) {

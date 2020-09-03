@@ -100,7 +100,9 @@ public class DragNDrop implements View.OnTouchListener {
                 return tile;
             }
         }
-        throw new InvalidParameterException("Index parameter is out of range for the provided color");
+        throw new InvalidParameterException(
+                String.format("Index %d parameter is out of range for the provided color %d", tileIndex, colorSide)
+        );
     }
 
     /**
