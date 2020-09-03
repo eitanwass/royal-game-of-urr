@@ -12,7 +12,6 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.engineio.client.transports.Polling;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.squareup.okhttp.ws.WebSocket;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;

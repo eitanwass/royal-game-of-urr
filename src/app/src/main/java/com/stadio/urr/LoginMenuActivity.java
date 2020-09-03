@@ -39,6 +39,8 @@ public class LoginMenuActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView errorTextView;
 
+    private String enteredEmail = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,8 @@ public class LoginMenuActivity extends AppCompatActivity {
     private void sendLoginData(Socket socket) {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+
+        enteredEmail = email;
         // TODO: hash password.
 
         JSONObject emissionJson = new JSONObject();
@@ -108,8 +112,14 @@ public class LoginMenuActivity extends AppCompatActivity {
 
     private void StartGame() {
         LOGGER.log(Level.INFO, "Start game in online mode.");
-        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
-        startActivity(gameStartActivity);
+        Bundle bundle = new Bundle();
+        bundle.putString("UserEmail", enteredEmail);
+
+//        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
+//        startActivity(gameStartActivity);
+        Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuStub.class);
+        mainMenuActivity.putExtras(bundle);
+        startActivity(mainMenuActivity);
     }
 
     public void switchToRegisterMenu(View view) {
