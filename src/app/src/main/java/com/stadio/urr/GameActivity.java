@@ -308,8 +308,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static boolean checkWin(Sides side) {
         for (Tile tile : tiles) {
-            if (tile.index != PATH_LENGTH && !tile.isAvailable()) {
-                if (tile.piece.side == side.getValue()) {
+            if (tile.getIndex() != PATH_LENGTH && !tile.isEmpty()) {
+                if (tile.getPiece().side == side.getValue()) {
                     return false;
                 }
             }

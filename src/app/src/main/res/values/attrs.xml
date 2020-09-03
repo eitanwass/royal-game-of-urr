@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Tile">
-        <attr name="type" format="enum">
-            <enum name="normal" value="1"/>
-            <enum name="another_turn" value="2"/>
-            <enum name="invincible" value="4"/>
-            <enum name="start" value="8"/>
-            <enum name="end" value="16"/>
+        <attr name="type" format="flags">
+            <flag name="normal" value="0"/>
+            <flag name="another_turn" value="1"/>
+            <flag name="invincible" value="2"/>
+            <flag name="start" value="4"/>
+            <flag name="end" value="8"/>
         </attr>
-        <attr name="exclusive_to" format="enum">
-            <enum name="white" value="0"/>
-            <enum name="black" value="1"/>
-            <enum name="none" value="2"/>
+        <attr name="exclusive_to" format="flags">
+            <flag name="none" value="0"/>
+            <flag name="white" value="1"/>
+            <flag name="black" value="2"/>
         </attr>
-        <attr name="tile_index" format="integer"></attr>
+        <attr name="tile_index" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="Piece">
         <attr name="side" format="enum">
             <enum name="white" value="0"/>
             <enum name="black" value="1"/>
-            <enum name="none" value="2"/>
         </attr>
     </declare-styleable>
 </resources>

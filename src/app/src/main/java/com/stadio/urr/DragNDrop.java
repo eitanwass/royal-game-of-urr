@@ -74,7 +74,7 @@ public class DragNDrop implements View.OnTouchListener {
         Tile destinationTile = getTileByRoll(piece);
         relativeLayout.bringChildToFront(ghostPiece);
         if ((destinationTile.isInvincible() && destinationTile.isInvincible())) {
-            relativeLayout.bringChildToFront(destinationTile.piece);
+            relativeLayout.bringChildToFront(destinationTile.getPiece());
         }
 
         int piece_image = piece.side == Sides.WHITE.getValue() ?
@@ -96,7 +96,7 @@ public class DragNDrop implements View.OnTouchListener {
      */
     private Tile getTileByIndex(int tileIndex, int colorSide) {
         for (Tile tile : tiles) {
-            if (tile.index == tileIndex && tile.canLand(colorSide)) {
+            if (tile.getIndex() == tileIndex && tile.canLand(colorSide)) {
                 return tile;
             }
         }
@@ -113,13 +113,13 @@ public class DragNDrop implements View.OnTouchListener {
     private Tile getNewTile(Piece piece, Tile startingTile) {
         Tile destinationTile = getTileByRoll(piece);
 
-        if (checkInside(piece, destinationTile) && startingTile.index != GameActivity.PATH_LENGTH) {
+        if (checkInside(piece, destinationTile) && startingTile.getIndex() != GameActivity.PATH_LENGTH) {
 
-            if (!destinationTile.isAvailable()) {
+            if (!destinationTile.isEmpty()) {
 
                 if (destinationTile.getPiece().side == (piece).side) {
 
-                    if(destinationTile.index == GameActivity.PATH_LENGTH) {
+                    if(destinationTile.getIndex() == GameActivity.PATH_LENGTH) {
                         removePieceFromTile(startingTile);
                         destinationTile.setPiece(piece);
                         GameActivity.changeTurn();
@@ -166,7 +166,7 @@ public class DragNDrop implements View.OnTouchListener {
      * @return The new tile the piece move to.
      */
     private Tile getTileByRoll(Piece piece) {
-        int possibleTileIndex = findTile(piece).index + GameActivity.getCurrentRoll();
+        int possibleTileIndex = findTile(piece).getIndex() + GameActivity.getCurrentRoll();
         possibleTileIndex = Math.min(possibleTileIndex, GameActivity.PATH_LENGTH);
 
         return getTileByIndex(possibleTileIndex, piece.side);

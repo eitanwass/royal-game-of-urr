@@ -2,14 +2,8 @@ package com.stadio.urr;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
-import static android.content.ContentValues.TAG;
 
 enum Sides{
     WHITE (0),
@@ -30,11 +24,12 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
     int side;
     public float dx;
     public float dy;
-    private Tile start_tile;
+    private Tile startTile;
 
     /**
      * creates an empty piece.
-     * @param context: the context in which this piece exists.
+     *
+     * @param context the context in which this piece exists.
      */
     public Piece(Context context) {
         super(context);
@@ -42,8 +37,9 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
 
     /**
      * Creates a Piece with attributes.
-     * @param context: the context in which the piece exists.
-     * @param attrs: the attributes the piece has.
+     *
+     * @param context the context in which the piece exists.
+     * @param attrs the attributes the piece has.
      */
     public Piece(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -78,26 +74,32 @@ public class Piece extends androidx.appcompat.widget.AppCompatImageView {
         this.side = piece.side;
         this.dx = piece.dx;
         this.dy = piece.dy;
-        this.start_tile = piece.start_tile;
+        this.startTile = piece.startTile;
         decideImage();
     }
+
+
+
+    /* --Getters & Setters-- */
+    public Tile getStartTile() {
+        return startTile;
+    }
+
+    public void setStartTile(Tile start_tile) {
+        this.startTile = start_tile;
+    }
+
+
+    /* --Private Methods-- */
 
     /**
      *  Decides what image to use depending on the side.
      */
-    public void decideImage() {
+    private void decideImage() {
         if (side == Sides.WHITE.getValue()) {
             this.setImageResource(R.drawable.piece_white);
         } else if (side == Sides.BLACK.getValue()) {
             this.setImageResource(R.drawable.piece_black);
         }
-    }
-
-    public void setStartTile(Tile start_tile) {
-        this.start_tile = start_tile;
-    }
-
-    public Tile getStartTile() {
-        return start_tile;
     }
 }
