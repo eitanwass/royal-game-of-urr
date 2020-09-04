@@ -115,13 +115,13 @@ public class DragNDrop implements View.OnTouchListener {
     private Tile getNewTile(Piece piece, Tile startingTile) {
         Tile destinationTile = getTileByRoll(piece);
 
-        if (checkInside(piece, destinationTile) && startingTile.getIndex() != GameActivity.PATH_LENGTH) {
+        if (checkInside(piece, destinationTile) && !startingTile.isEnd()) {
 
             if (!destinationTile.isEmpty()) {
 
                 if (destinationTile.getPiece().side == (piece).side) {
 
-                    if(destinationTile.getIndex() == GameActivity.PATH_LENGTH) {
+                    if(destinationTile.isEnd()) {
                         removePieceFromTile(startingTile);
                         destinationTile.setPiece(piece);
                         GameActivity.changeTurn();

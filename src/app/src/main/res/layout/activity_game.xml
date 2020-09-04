@@ -15,12 +15,12 @@
         android:layout_height="50dp"
         android:layout_above="@id/constraint_layout_dice"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="331dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="249dp"
+        android:layout_marginBottom="51dp"
         android:src="@drawable/invincibility_tile"
         app:tile_index="13"
         custom:exclusive_to="white"
-        custom:type="another_turn"/>
+        custom:type="another_turn" />
 
     <com.stadio.urr.Tile
         android:id="@+id/tile2"
@@ -203,7 +203,7 @@
         app:layout_constraintStart_toStartOf="@+id/tile8"
         app:layout_constraintTop_toBottomOf="@+id/tile12"
         app:tile_index="8"
-        custom:type="invincible"/>
+        app:type="another_turn|invincible" />
 
     <com.stadio.urr.Tile
         android:id="@+id/tile14"
@@ -317,7 +317,7 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         app:tile_index="15"
         custom:exclusive_to="white"
-        custom:type="start"/>
+        custom:type="end"/>
 
     <com.stadio.urr.Tile
         android:id="@+id/start_white"
@@ -344,7 +344,7 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         app:tile_index="15"
         custom:exclusive_to="black"
-        custom:type="start"/>
+        custom:type="end"/>
 
     <com.stadio.urr.Tile
         android:id="@+id/start_black"
