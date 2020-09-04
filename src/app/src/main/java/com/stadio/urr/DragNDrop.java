@@ -47,7 +47,6 @@ public class DragNDrop implements View.OnTouchListener {
                 selectedPiece.dx = mouseX - selectedPiece.getX();
                 selectedPiece.dy = mouseY - selectedPiece.getY();
                 setGhost(selectedPiece);
-                //GameActivity.pushLabelsToFront();
                 relativeLayout.bringChildToFront(selectedPiece);
                 break;
 
@@ -59,6 +58,7 @@ public class DragNDrop implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
                 Tile newTile = getNewTile(selectedPiece, startingTile);
                 ghostPiece.setVisibility(View.INVISIBLE);
+                GameActivity.updateLabels();
                 if (newTile.isStart() || newTile.isEnd()) {
                     GameActivity.pushLabelsToFront();
                 }
@@ -126,7 +126,7 @@ public class DragNDrop implements View.OnTouchListener {
                 if (destinationTile.getPiece().side == (piece).side) {
 
                     if(destinationTile.isEnd()) {
-                        removePieceFromTile(startingTile);
+                        startingTile.removePiece();
                         destinationTile.setPiece(piece);
                         GameActivity.changeTurn();
                         return destinationTile;
@@ -140,7 +140,7 @@ public class DragNDrop implements View.OnTouchListener {
                 eat(destinationTile);
             }
 
-            removePieceFromTile(startingTile);
+            startingTile.removePiece();
             destinationTile.setPiece(piece);
             if (destinationTile.isAnotherTurn()) {
                 GameActivity.anotherTurn();
@@ -161,8 +161,10 @@ public class DragNDrop implements View.OnTouchListener {
     public void eat(Tile newTile) {
         Piece eatenPiece = newTile.getPiece();
 
-        removePieceFromTile(newTile);
+        newTile.removePiece();
+        eatenPiece.getStartTile().setPiece(eatenPiece);
         snapToTile(eatenPiece, eatenPiece.getStartTile());
+        GameActivity.pushLabelsToFront();
     }
 
     /**
@@ -190,15 +192,6 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     /**
-     * Removes a piece from a tile.
-     *
-     * @param tile the piece we want to remove.
-     */
-    public void removePieceFromTile(Tile tile) {
-        tile.setPiece(null);
-    }
-
-    /**
      * Find the tile that contains the provided piece.
      * If no tile contains the piece, return the home "tile".
      *
@@ -207,9 +200,7 @@ public class DragNDrop implements View.OnTouchListener {
      */
     public Tile findTile(Piece piece) {
         for (Tile tile : tiles) {
-            if (tile.getPiece() == null)
-                continue;
-            if (tile.getPiece().equals(piece)) {
+            if (tile.checkPiece(piece)) {
                 return tile;
             }
         }

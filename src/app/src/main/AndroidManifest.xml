@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainMenuStub"></activity>
+        <activity android:name=".MainMenuStub">
+        </activity>
         <activity android:name=".MainActivity">
         </activity>
         <activity
@@ -25,10 +26,12 @@
         </activity>
         <activity
             android:name=".RegisterMenuActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".LoginMenuActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

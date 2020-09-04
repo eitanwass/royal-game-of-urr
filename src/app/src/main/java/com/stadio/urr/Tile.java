@@ -154,4 +154,15 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     public boolean isStart() {
         return (this.tileType | Attributes.START.getValue()) == this.tileType;
     }
+
+    /**
+     * Removes a piece from a tile.
+     */
+    public void removePiece() {
+        this.setPiece(null);
+    }
+
+    public boolean checkPiece(Piece piece) {
+        return this.piece == piece;
+    }
 }

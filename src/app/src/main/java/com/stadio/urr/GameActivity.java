@@ -16,7 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+
+enum Starts_Ends {
+    START_WHITE, START_BLACK, END_WHITE, END_BLACK
+}
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,10 +32,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ConstraintLayout constraintLayoutDice;
 
     private Tile rootTile;
-    private static TextView start_white_label;
-    private static TextView start_black_label;
-    private static TextView end_white_label;
-    private static TextView end_black_label;
 
     private static int currentRoll = 0;
 
@@ -38,6 +41,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Piece gamePieceWhite;
     private Piece gamePieceBlack;
     private static ImageView[] dice;
+    private static Map<TextView, MultiplePiecesTile> starts_ends;
 
     private static boolean didRoll = false;
     private static boolean whitesTurn = false;
@@ -80,11 +84,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         rootTile = findViewById(R.id.tile);
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
 
-        start_white_label = findViewById(R.id.pieces_left_start_white);
-        start_black_label = findViewById(R.id.pieces_left_start_black);
-        end_white_label = findViewById(R.id.pieces_left_end_white);
-        end_black_label = findViewById(R.id.pieces_left_end_black);
-
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
 
@@ -97,6 +96,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         dice[1] = findViewById(R.id.dice2);
         dice[2] = findViewById(R.id.dice3);
         dice[3] = findViewById(R.id.dice4);
+
+        starts_ends = new HashMap<>();
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_start_white), (MultiplePiecesTile) findViewById(R.id.start_white));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_start_black), (MultiplePiecesTile) findViewById(R.id.start_black));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
     }
 
     /**
@@ -148,11 +153,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 int tileSizePixels = (int) convertDpToPixel((int) tileSize, getApplicationContext());
                 childViewLayoutParams.height = childViewLayoutParams.width = tileSizePixels;
                 childView.setLayoutParams(childViewLayoutParams);
-                if (childView.getId() == R.id.start_white) {
-                    ((Tile) childView).setPiece(gamePieceWhite);
-                }else if (childView.getId() == R.id.start_black) {
-                    ((Tile) childView).setPiece(gamePieceBlack);
-                }
                 tiles.add((Tile) childView);
             }
         }
@@ -214,6 +214,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTiles();
         setPieces(gamePieceWhite, whitePieces);
         setPieces(gamePieceBlack, blackPieces);
+        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
+        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
         setLabels();
         DragNDrop.tiles = tiles;
         changeTurn();
@@ -221,21 +223,34 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setLabels() {
         float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
-        int leftMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - start_white_label.getMeasuredWidth() / 2;
-        int bottomMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - start_white_label.getMeasuredHeight() / 2;
+        TextView tempLabel = (TextView) starts_ends.keySet().toArray()[0];
+        int leftMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - tempLabel.getMeasuredWidth() / 2;
+        int bottomMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - tempLabel.getMeasuredHeight() / 2;
 
-        ((RelativeLayout.LayoutParams) start_white_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
-        ((RelativeLayout.LayoutParams) start_black_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
-        ((RelativeLayout.LayoutParams) end_white_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
-        ((RelativeLayout.LayoutParams) end_black_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        for (TextView label : starts_ends.keySet()) {
+            ((RelativeLayout.LayoutParams) label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        }
+        updateLabels();
         pushLabelsToFront();
     }
 
-    public static void pushLabelsToFront(){
-        relativeLayout.bringChildToFront(start_black_label);
-        relativeLayout.bringChildToFront(start_white_label);
-        relativeLayout.bringChildToFront(end_black_label);
-        relativeLayout.bringChildToFront(end_white_label);
+    public static void pushLabelsToFront() {
+        for (TextView label : starts_ends.keySet()) {
+            relativeLayout.bringChildToFront(label);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public static void updateLabels() {
+        for (TextView label : starts_ends.keySet()) {
+            int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
+            if (numberOfPieces == 0) {
+                label.setVisibility(View.INVISIBLE);
+            } else {
+                label.setVisibility(View.VISIBLE);
+            }
+            label.setText("" + numberOfPieces);
+        }
     }
 
     /**
