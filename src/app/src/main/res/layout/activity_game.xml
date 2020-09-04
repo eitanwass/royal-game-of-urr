@@ -448,4 +448,48 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/pieces_left_start_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/start_white"
+        android:layout_marginStart="19dp"
+        android:layout_marginBottom="19dp"
+        android:layout_toEndOf="@+id/tile19"
+        android:text="7"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/pieces_left_start_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tile14"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@+id/tile3"
+        android:text="7"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/pieces_left_end_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tile15"
+        android:layout_alignStart="@+id/end_black"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="15dp"
+        android:text="0"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/pieces_left_end_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/end_white"
+        android:layout_alignBottom="@+id/end_white"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="15dp"
+        android:text="0"
+        android:textColor="#000000" />
+
 </RelativeLayout>

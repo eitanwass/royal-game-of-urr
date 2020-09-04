@@ -145,4 +145,13 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
     public boolean isEnd() {
         return (this.tileType | Attributes.END.getValue()) == this.tileType;
     }
+
+    /**
+     * Checks if this tile is the start tile.
+     *
+     * @return True if is the start, false if not.
+     */
+    public boolean isStart() {
+        return (this.tileType | Attributes.START.getValue()) == this.tileType;
+    }
 }

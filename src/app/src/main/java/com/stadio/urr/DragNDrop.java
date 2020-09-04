@@ -47,6 +47,7 @@ public class DragNDrop implements View.OnTouchListener {
                 selectedPiece.dx = mouseX - selectedPiece.getX();
                 selectedPiece.dy = mouseY - selectedPiece.getY();
                 setGhost(selectedPiece);
+                //GameActivity.pushLabelsToFront();
                 relativeLayout.bringChildToFront(selectedPiece);
                 break;
 
@@ -58,6 +59,9 @@ public class DragNDrop implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
                 Tile newTile = getNewTile(selectedPiece, startingTile);
                 ghostPiece.setVisibility(View.INVISIBLE);
+                if (newTile.isStart() || newTile.isEnd()) {
+                    GameActivity.pushLabelsToFront();
+                }
                 snapToTile(selectedPiece, newTile);
                 break;
         }

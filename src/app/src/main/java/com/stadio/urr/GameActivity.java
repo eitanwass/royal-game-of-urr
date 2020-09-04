@@ -13,6 +13,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,10 +21,14 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     /* --View Variables-- */
-    private RelativeLayout relativeLayout;
+    private static RelativeLayout relativeLayout;
     private ConstraintLayout constraintLayoutDice;
 
     private Tile rootTile;
+    private static TextView start_white_label;
+    private static TextView start_black_label;
+    private static TextView end_white_label;
+    private static TextView end_black_label;
 
     private static int currentRoll = 0;
 
@@ -74,6 +79,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
         rootTile = findViewById(R.id.tile);
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
+
+        start_white_label = findViewById(R.id.pieces_left_start_white);
+        start_black_label = findViewById(R.id.pieces_left_start_black);
+        end_white_label = findViewById(R.id.pieces_left_end_white);
+        end_black_label = findViewById(R.id.pieces_left_end_black);
 
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
@@ -204,8 +214,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTiles();
         setPieces(gamePieceWhite, whitePieces);
         setPieces(gamePieceBlack, blackPieces);
+        setLabels();
         DragNDrop.tiles = tiles;
         changeTurn();
+    }
+
+    private void setLabels() {
+        float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
+        int leftMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - start_white_label.getMeasuredWidth() / 2;
+        int bottomMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - start_white_label.getMeasuredHeight() / 2;
+
+        ((RelativeLayout.LayoutParams) start_white_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        ((RelativeLayout.LayoutParams) start_black_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        ((RelativeLayout.LayoutParams) end_white_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        ((RelativeLayout.LayoutParams) end_black_label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
+        pushLabelsToFront();
+    }
+
+    public static void pushLabelsToFront(){
+        relativeLayout.bringChildToFront(start_black_label);
+        relativeLayout.bringChildToFront(start_white_label);
+        relativeLayout.bringChildToFront(end_black_label);
+        relativeLayout.bringChildToFront(end_white_label);
     }
 
     /**
