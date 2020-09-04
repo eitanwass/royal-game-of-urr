@@ -345,21 +345,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         resetDice();
-        if (checkWin(whitesTurn ? Sides.BLACK : Sides.WHITE)) {
+        if (checkWin()) {
             Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
         }
 
     }
 
-    private static boolean checkWin(Sides side) {
-        for (Tile tile : tiles) {
-            if (tile.getIndex() != PATH_LENGTH && !tile.isEmpty()) {
-                if (tile.getPiece().side == side.getValue()) {
-                    return false;
-                }
+    private static boolean checkWin() {
+        for (MultiplePiecesTile tile : starts_ends.values()) {
+            if (tile.isEnd() && tile.getNumberOfPieces() == NUMBER_OF_PIECES) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
