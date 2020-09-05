@@ -449,14 +449,17 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <TextView
         android:id="@+id/pieces_left_start_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/start_white"
-        android:layout_marginStart="19dp"
-        android:layout_marginBottom="19dp"
-        android:layout_toEndOf="@+id/tile19"
+        android:layout_below="@+id/tile14"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/end_white"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
         android:text="7"
         android:textColor="#000000" />
 
@@ -464,32 +467,38 @@
         android:id="@+id/pieces_left_start_black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tile14"
-        android:layout_marginStart="22dp"
-        android:layout_marginBottom="16dp"
-        android:layout_toEndOf="@+id/tile3"
+        android:layout_alignTop="@+id/start_black"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/end_black"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
         android:text="7"
-        android:textColor="#ffffff" />
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/pieces_left_end_black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tile15"
-        android:layout_alignStart="@+id/end_black"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="15dp"
+        android:layout_alignTop="@+id/end_black"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/tile4"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
         android:text="0"
-        android:textColor="#ffffff" />
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/pieces_left_end_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/end_white"
-        android:layout_alignBottom="@+id/end_white"
-        android:layout_marginStart="22dp"
-        android:layout_marginBottom="15dp"
+        android:layout_below="@+id/tile15"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/tile20"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
         android:text="0"
         android:textColor="#000000" />
 

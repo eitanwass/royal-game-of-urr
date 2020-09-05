@@ -222,17 +222,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Sets the positioning of all of the labels.
+     * Sets the all of the labels.
      */
     private void setLabels() {
-        float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
-        TextView tempLabel = (TextView) starts_ends.keySet().toArray()[0];
-        int leftMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - tempLabel.getMeasuredWidth() / 2;
-        int bottomMargin = (int) convertDpToPixel( tileSize / 2, getApplicationContext()) - tempLabel.getMeasuredHeight() / 2;
-
-        for (TextView label : starts_ends.keySet()) {
-            ((RelativeLayout.LayoutParams) label.getLayoutParams()).setMargins(leftMargin,0,0,bottomMargin);
-        }
         updateLabels();
         pushLabelsToFront();
     }
