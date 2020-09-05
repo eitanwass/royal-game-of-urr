@@ -60,7 +60,9 @@ public class MainMenuStub extends AppCompatActivity {
         mSocket.on("found-match", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                displayMessage("Match Found With: " + args[0].toString());
+                String otherUserUsername = args[0].toString();
+                displayMessage("Match Found With: " + otherUserUsername);
+                joinMatch(otherUserUsername);
             }
         });
     }
@@ -87,5 +89,14 @@ public class MainMenuStub extends AppCompatActivity {
             e.printStackTrace();
         }
         mSocket.emit("quick_match", emissionJson);
+    }
+
+    private void joinMatch(String otherUserUsername) {
+        Bundle bundle = new Bundle();
+        bundle.putString("otherUsername", otherUserUsername);
+
+        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
+        gameStartActivity.putExtras(bundle);
+        startActivity(gameStartActivity);
     }
 }
