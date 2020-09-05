@@ -162,6 +162,11 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
         this.setPiece(null);
     }
 
+    /**
+     * Check if a piece is on this tile.
+     * @param piece The piece we want to check if it's on our tile.
+     * @return True if it's on false if not.
+     */
     public boolean checkPiece(Piece piece) {
         return this.piece == piece;
     }

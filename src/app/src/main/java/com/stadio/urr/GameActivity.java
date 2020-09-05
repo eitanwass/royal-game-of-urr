@@ -221,6 +221,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         changeTurn();
     }
 
+    /**
+     * Sets the positioning of all of the labels.
+     */
     private void setLabels() {
         float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
         TextView tempLabel = (TextView) starts_ends.keySet().toArray()[0];
@@ -234,12 +237,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         pushLabelsToFront();
     }
 
+    /**
+     * Pushes all the labels to the front of the layout.
+     */
     public static void pushLabelsToFront() {
         for (TextView label : starts_ends.keySet()) {
             relativeLayout.bringChildToFront(label);
         }
     }
 
+    /**
+     * Updates the number on all of the labels.
+     */
     @SuppressLint("SetTextI18n")
     public static void updateLabels() {
         for (TextView label : starts_ends.keySet()) {
