@@ -14,10 +14,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static GameActivity Instance;
 
     /* --View Variables-- */
     private RelativeLayout relativeLayout;
@@ -35,10 +45,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static ImageView[] dice;
 
     private static boolean didRoll = false;
-    private static boolean whitesTurn = false;
+    private static boolean myTurn = false;
+    private static Sides myColor = Sides.WHITE;
 
     private float width_dp;
     private float height_dp;
+
+    private static String otherUsername = "";
+
+    private static Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /* --Constants-- */
@@ -60,20 +82,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return currentRoll;
     }
 
+
     /* --Methods-- */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_game);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().hide();
+        if (GameActivity.Instance == null) {
+            Instance = this;
+        }
 
-        relativeLayout = findViewById(R.id.game_relative_layout);
-        constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
-        rootTile = findViewById(R.id.tile);
-        findViewById(R.id.dice_roll_button).setOnClickListener(this);
+        setContentView(R.layout.activity_game);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            otherUsername = bundle.getString("otherUsername");
+        }
+        
+        ListenForEvents();
+
+        getReferences();
 
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
@@ -87,6 +119,75 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         dice[1] = findViewById(R.id.dice2);
         dice[2] = findViewById(R.id.dice3);
         dice[3] = findViewById(R.id.dice4);
+
+        mSocket.emit("joined-game");
+    }
+
+
+    /* --Private Methods-- */
+
+    private void getReferences() {
+        relativeLayout = findViewById(R.id.game_relative_layout);
+        constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
+        rootTile = findViewById(R.id.tile);
+
+        findViewById(R.id.dice_roll_button).setOnClickListener(this);
+    }
+
+    private void ListenForEvents() {
+        mSocket.on("your-turn", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.d("SETUP_SIDE", otherUsername + ": It is your turn!");
+                myTurn = true;
+
+                enableDisablePieces(myColor, true);
+            }
+        });
+
+        mSocket.on("setup-side", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                int colorSide = Integer.parseInt(args[0].toString());
+
+                myColor = colorSide == 0 ? Sides.WHITE : Sides.BLACK;
+
+                enableMyPieces();
+
+                Log.d("SETUP_SIDE", otherUsername + ": Your color is: " + myColor.toString());
+            }
+        });
+
+        mSocket.on("move-piece", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject obj = null;
+                int from = 0;
+                int to = 0;
+
+                try {
+                    obj = new JSONObject(args[0].toString());
+                    from = obj.getInt("from");
+                    to = obj.getInt("to");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
+
+                Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
+                Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
+                Piece movedPiece = fromTile.getPiece();
+
+                if(movedPiece == null)
+                    return;
+
+                DragNDrop.removePieceFromTile(fromTile);
+                toTile.setPiece(movedPiece);
+                DragNDrop.snapToTile(movedPiece, toTile);
+            }
+        });
     }
 
     /**
@@ -103,6 +204,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         piece.setStartTile((Tile) findViewById(startId));
         return piece;
     }
+
+    private void enableMyPieces() {
+        enableDisablePieces((myColor == Sides.WHITE) ? Sides.BLACK : Sides.WHITE, false);
+        enableDisablePieces(myColor, true);
+    }
+
+    private void enableDisablePieces(final Sides color, final boolean enableDisable) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Piece p : (color == Sides.WHITE) ? whitePieces : blackPieces) {
+                    p.setEnabled(enableDisable);
+                }
+            }
+        });
+    }
+
+
+    /* --Public Methods-- */
 
     /**
      * Gets the width and height of the screen in DP.
@@ -205,7 +325,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setPieces(gamePieceWhite, whitePieces);
         setPieces(gamePieceBlack, blackPieces);
         DragNDrop.tiles = tiles;
-        changeTurn();
     }
 
     /**
@@ -238,8 +357,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.dice_roll_button) {
-            if (!didRoll)
-                currentRoll = rollDice();
+            if (myTurn) {
+                if (!didRoll)
+                    currentRoll = rollDice();
+            }
         }
     }
 
@@ -285,25 +406,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * Reset the dice.
      */
     public static void changeTurn(){
-        GameActivity.whitesTurn = !whitesTurn;
+        myTurn = false;
+        mSocket.emit("pass-turn");
 
-        Log.d("INFO", "changeTurn: cur turn=" + (GameActivity.whitesTurn ? "whites" : "blacks"));
-        ArrayList<Piece> turn = whitesTurn ? whitePieces : blackPieces;
-        ArrayList<Piece> notTurn = whitesTurn ? blackPieces : whitePieces;
-
-        for (Piece p : turn) {
-            p.setEnabled(true);
-        }
-
-        for (Piece p : notTurn) {
-            p.setEnabled(false);
-        }
+        GameActivity.Instance.enableDisablePieces(myColor, false);
 
         resetDice();
-        if (checkWin(whitesTurn ? Sides.BLACK : Sides.WHITE)) {
-            Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
+        if (checkWin(Sides.WHITE)) {
+            Log.d("INFO", "changeTurn: " + "whites Win!");
         }
 
+        if (checkWin(Sides.BLACK)) {
+            Log.d("INFO", "changeTurn: " + "Blacks Win!");
+        }
     }
 
     private static boolean checkWin(Sides side) {
