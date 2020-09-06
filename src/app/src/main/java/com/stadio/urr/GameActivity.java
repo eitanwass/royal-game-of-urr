@@ -18,11 +18,16 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static GameActivity Instance;
 
     /* --View Variables-- */
     private RelativeLayout relativeLayout;
@@ -84,6 +89,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (GameActivity.Instance == null) {
+            Instance = this;
+        }
+
         setContentView(R.layout.activity_game);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -132,7 +141,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("SETUP_SIDE", otherUsername + ": It is your turn!");
                 myTurn = true;
 
-                enableDisablePieces(true);
+                enableDisablePieces(myColor, true);
             }
         });
 
@@ -143,7 +152,40 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 myColor = colorSide == 0 ? Sides.WHITE : Sides.BLACK;
 
+                enableMyPieces();
+
                 Log.d("SETUP_SIDE", otherUsername + ": Your color is: " + myColor.toString());
+            }
+        });
+
+        mSocket.on("move-piece", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject obj = null;
+                int from = 0;
+                int to = 0;
+
+                try {
+                    obj = new JSONObject(args[0].toString());
+                    from = obj.getInt("from");
+                    to = obj.getInt("to");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
+
+                Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
+                Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
+                Piece movedPiece = fromTile.getPiece();
+
+                if(movedPiece == null)
+                    return;
+
+                DragNDrop.removePieceFromTile(fromTile);
+                toTile.setPiece(movedPiece);
+                DragNDrop.snapToTile(movedPiece, toTile);
             }
         });
     }
@@ -163,16 +205,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return piece;
     }
 
-    private void enableDisablePieces(final boolean enable) {
+    private void enableMyPieces() {
+        enableDisablePieces((myColor == Sides.WHITE) ? Sides.BLACK : Sides.WHITE, false);
+        enableDisablePieces(myColor, true);
+    }
+
+    private void enableDisablePieces(final Sides color, final boolean enableDisable) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (Piece p : (myColor == Sides.WHITE) ? whitePieces : blackPieces) {
-                    p.setEnabled(enable);
-                }
-
-                for (Piece p : (myColor == Sides.WHITE) ? blackPieces : whitePieces) {
-                    p.setEnabled(!enable);
+                for (Piece p : (color == Sides.WHITE) ? whitePieces : blackPieces) {
+                    p.setEnabled(enableDisable);
                 }
             }
         });
@@ -366,9 +409,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         myTurn = false;
         mSocket.emit("pass-turn");
 
-        for (Piece p : myColor == Sides.WHITE ? whitePieces : blackPieces) {
-            p.setEnabled(false);
-        }
+        GameActivity.Instance.enableDisablePieces(myColor, false);
 
         resetDice();
         if (checkWin(Sides.WHITE)) {
