@@ -84,6 +84,10 @@ public class DragNDrop implements View.OnTouchListener {
                 mSocket.emit("move-piece", emissionJson);
 
                 ghostPiece.setVisibility(View.INVISIBLE);
+                GameActivity.updateLabels();
+                if (newTile.isStart() || newTile.isEnd()) {
+                    GameActivity.pushLabelsToFront();
+                }
                 snapToTile(selectedPiece, newTile);
                 break;
         }
@@ -141,14 +145,14 @@ public class DragNDrop implements View.OnTouchListener {
     private Tile getNewTile(Piece piece, Tile startingTile) {
         Tile destinationTile = getTileByRoll(piece);
 
-        if (checkInside(piece, destinationTile) && startingTile.getIndex() != GameActivity.PATH_LENGTH) {
+        if (checkInside(piece, destinationTile) && !startingTile.isEnd()) {
 
             if (!destinationTile.isEmpty()) {
 
                 if (destinationTile.getPiece().side == (piece).side) {
 
-                    if(destinationTile.getIndex() == GameActivity.PATH_LENGTH) {
-                        removePieceFromTile(startingTile);
+                    if(destinationTile.isEnd()) {
+                        startingTile.removePiece();
                         destinationTile.setPiece(piece);
                         GameActivity.changeTurn();
                         return destinationTile;
@@ -162,7 +166,7 @@ public class DragNDrop implements View.OnTouchListener {
                 eat(destinationTile);
             }
 
-            removePieceFromTile(startingTile);
+            startingTile.removePiece();
             destinationTile.setPiece(piece);
             if (destinationTile.isAnotherTurn()) {
                 GameActivity.anotherTurn();
@@ -183,8 +187,10 @@ public class DragNDrop implements View.OnTouchListener {
     public void eat(Tile newTile) {
         Piece eatenPiece = newTile.getPiece();
 
-        removePieceFromTile(newTile);
+        newTile.removePiece();
+        eatenPiece.getStartTile().setPiece(eatenPiece);
         snapToTile(eatenPiece, eatenPiece.getStartTile());
+        GameActivity.pushLabelsToFront();
     }
 
     /**
@@ -221,6 +227,7 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     /**
+
      * Find the tile that contains the provided piece.
      * If no tile contains the piece, return the home "tile".
      *
@@ -229,9 +236,7 @@ public class DragNDrop implements View.OnTouchListener {
      */
     public Tile findTile(Piece piece) {
         for (Tile tile : tiles) {
-            if (tile.getPiece() == null)
-                continue;
-            if (tile.getPiece().equals(piece)) {
+            if (tile.checkPiece(piece)) {
                 return tile;
             }
         }

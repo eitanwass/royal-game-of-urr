@@ -15,12 +15,12 @@
         android:layout_height="50dp"
         android:layout_above="@id/constraint_layout_dice"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="331dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="249dp"
+        android:layout_marginBottom="51dp"
         android:src="@drawable/invincibility_tile"
         app:tile_index="13"
         custom:exclusive_to="white"
-        custom:type="another_turn"/>
+        custom:type="another_turn" />
 
     <com.stadio.urr.Tile
         android:id="@+id/tile2"
@@ -203,7 +203,7 @@
         app:layout_constraintStart_toStartOf="@+id/tile8"
         app:layout_constraintTop_toBottomOf="@+id/tile12"
         app:tile_index="8"
-        custom:type="invincible"/>
+        app:type="another_turn|invincible" />
 
     <com.stadio.urr.Tile
         android:id="@+id/tile14"
@@ -306,7 +306,7 @@
         custom:exclusive_to="white"
         custom:type="normal"/>
 
-    <com.stadio.urr.Tile
+    <com.stadio.urr.MultiplePiecesTile
         android:id="@+id/end_white"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -317,9 +317,9 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         app:tile_index="15"
         custom:exclusive_to="white"
-        custom:type="start"/>
+        custom:type="end"/>
 
-    <com.stadio.urr.Tile
+    <com.stadio.urr.MultiplePiecesTile
         android:id="@+id/start_white"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -332,7 +332,7 @@
         custom:exclusive_to="white"
         custom:type="start"/>
 
-    <com.stadio.urr.Tile
+    <com.stadio.urr.MultiplePiecesTile
         android:id="@+id/end_black"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -344,9 +344,9 @@
         app:layout_constraintStart_toEndOf="@+id/tile19"
         app:tile_index="15"
         custom:exclusive_to="black"
-        custom:type="start"/>
+        custom:type="end"/>
 
-    <com.stadio.urr.Tile
+    <com.stadio.urr.MultiplePiecesTile
         android:id="@+id/start_black"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -446,6 +446,60 @@
             app:layout_constraintEnd_toStartOf="@+id/dice1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/pieces_left_start_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tile14"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/end_white"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
+        android:text="7"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/pieces_left_start_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/start_black"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/end_black"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
+        android:text="7"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/pieces_left_end_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/end_black"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/tile4"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/pieces_left_end_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tile15"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/tile20"
+        android:background="@drawable/piece_number_indicator_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="#000000" />
 
 </RelativeLayout>

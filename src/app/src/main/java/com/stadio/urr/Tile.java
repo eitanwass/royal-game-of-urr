@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import org.w3c.dom.Attr;
 import org.xmlpull.v1.XmlPullParser;
 
 enum Attributes {
@@ -67,7 +68,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
             this.setImageResource(R.drawable.normal_tile);
         } else if (tileType == Attributes.ANOTHER_TURN.getValue()) {
             this.setImageResource(R.drawable.another_turn_tile);
-        } else if (tileType == Attributes.INVINCIBILITY.getValue()) {
+        } else if (this.isInvincible()) {
             this.setImageResource(R.drawable.invincibility_tile);
         } else {
             this.setImageResource(0);
@@ -124,8 +125,7 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
      * @return True if grants another turn false if not.
      */
     public boolean isAnotherTurn() {
-        return this.tileType == Attributes.ANOTHER_TURN.getValue() ||
-                this.tileType == Attributes.INVINCIBILITY.getValue();
+        return (this.tileType | Attributes.ANOTHER_TURN.getValue()) == this.tileType;
     }
 
     /**
@@ -134,6 +134,40 @@ public class Tile extends androidx.appcompat.widget.AppCompatImageView {
      * @return True if grants invincibility false if not.
      */
     public boolean isInvincible() {
-        return this.tileType == Attributes.INVINCIBILITY.getValue();
+        return (this.tileType | Attributes.INVINCIBILITY.getValue()) == this.tileType;
+    }
+
+    /**
+     * Checks if this tile is the end tile.
+     *
+     * @return True if is the end, false if not.
+     */
+    public boolean isEnd() {
+        return (this.tileType | Attributes.END.getValue()) == this.tileType;
+    }
+
+    /**
+     * Checks if this tile is the start tile.
+     *
+     * @return True if is the start, false if not.
+     */
+    public boolean isStart() {
+        return (this.tileType | Attributes.START.getValue()) == this.tileType;
+    }
+
+    /**
+     * Removes a piece from a tile.
+     */
+    public void removePiece() {
+        this.setPiece(null);
+    }
+
+    /**
+     * Check if a piece is on this tile.
+     * @param piece The piece we want to check if it's on our tile.
+     * @return True if it's on false if not.
+     */
+    public boolean checkPiece(Piece piece) {
+        return this.piece == piece;
     }
 }

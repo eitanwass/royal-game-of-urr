@@ -13,6 +13,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -23,14 +24,21 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+
+enum Starts_Ends {
+    START_WHITE, START_BLACK, END_WHITE, END_BLACK
+}
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static GameActivity Instance;
 
     /* --View Variables-- */
-    private RelativeLayout relativeLayout;
+    private static RelativeLayout relativeLayout;
     private ConstraintLayout constraintLayoutDice;
 
     private Tile rootTile;
@@ -43,6 +51,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Piece gamePieceWhite;
     private Piece gamePieceBlack;
     private static ImageView[] dice;
+    private static Map<TextView, MultiplePiecesTile> starts_ends;
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
@@ -119,6 +128,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         dice[1] = findViewById(R.id.dice2);
         dice[2] = findViewById(R.id.dice3);
         dice[3] = findViewById(R.id.dice4);
+
+
+        starts_ends = new HashMap<>();
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_start_white), (MultiplePiecesTile) findViewById(R.id.start_white));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_start_black), (MultiplePiecesTile) findViewById(R.id.start_black));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
+        starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
 
         mSocket.emit("joined-game");
     }
@@ -258,11 +274,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 int tileSizePixels = (int) convertDpToPixel((int) tileSize, getApplicationContext());
                 childViewLayoutParams.height = childViewLayoutParams.width = tileSizePixels;
                 childView.setLayoutParams(childViewLayoutParams);
-                if (childView.getId() == R.id.start_white) {
-                    ((Tile) childView).setPiece(gamePieceWhite);
-                }else if (childView.getId() == R.id.start_black) {
-                    ((Tile) childView).setPiece(gamePieceBlack);
-                }
                 tiles.add((Tile) childView);
             }
         }
@@ -324,7 +335,43 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTiles();
         setPieces(gamePieceWhite, whitePieces);
         setPieces(gamePieceBlack, blackPieces);
+        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
+        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+        setLabels();
         DragNDrop.tiles = tiles;
+    }
+
+    /**
+     * Sets the all of the labels.
+     */
+    private void setLabels() {
+        updateLabels();
+        pushLabelsToFront();
+    }
+
+    /**
+     * Pushes all the labels to the front of the layout.
+     */
+    public static void pushLabelsToFront() {
+        for (TextView label : starts_ends.keySet()) {
+            relativeLayout.bringChildToFront(label);
+        }
+    }
+
+    /**
+     * Updates the number on all of the labels.
+     */
+    @SuppressLint("SetTextI18n")
+    public static void updateLabels() {
+        for (TextView label : starts_ends.keySet()) {
+            int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
+            if (numberOfPieces == 0) {
+                label.setVisibility(View.INVISIBLE);
+            } else {
+                label.setVisibility(View.VISIBLE);
+            }
+            label.setText("" + numberOfPieces);
+        }
     }
 
     /**
@@ -412,24 +459,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         GameActivity.Instance.enableDisablePieces(myColor, false);
 
         resetDice();
-        if (checkWin(Sides.WHITE)) {
-            Log.d("INFO", "changeTurn: " + "whites Win!");
-        }
-
-        if (checkWin(Sides.BLACK)) {
-            Log.d("INFO", "changeTurn: " + "Blacks Win!");
+        if (checkWin()) {
+            Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
         }
     }
 
-    private static boolean checkWin(Sides side) {
-        for (Tile tile : tiles) {
-            if (tile.getIndex() != PATH_LENGTH && !tile.isEmpty()) {
-                if (tile.getPiece().side == side.getValue()) {
-                    return false;
-                }
+    private static boolean checkWin() {
+        for (MultiplePiecesTile tile : starts_ends.values()) {
+            if (tile.isEnd() && tile.getNumberOfPieces() == NUMBER_OF_PIECES) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
