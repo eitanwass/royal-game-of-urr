@@ -119,6 +119,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         getReferences();
 
+
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
 
@@ -140,6 +141,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
 
         mSocket.emit("joined-game");
+    }
+
+    /**
+     * Set up sizes, tiles, pieces, and start the game.
+     * Happens after onCreate.
+     *
+     * @param hasFocus Does the window have focus.
+     */
+    public void onWindowFocusChanged(boolean hasFocus) {
+        getSizes();
+        setTiles();
+        setPieces(gamePieceWhite, whitePieces);
+        setPieces(gamePieceBlack, blackPieces);
+        enableMyPieces();
+        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
+        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+        setLabels();
+        DragNDrop.tiles = tiles;
     }
 
 
@@ -359,23 +378,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             relativeLayout.addView(duplicatePiece);
         }
         relativeLayout.invalidate();
-    }
-
-    /**
-     * Set up sizes, tiles, pieces, and start the game.
-     * Happens after onCreate.
-     *
-     * @param hasFocus Does the window have focus.
-     */
-    public void onWindowFocusChanged(boolean hasFocus) {
-        getSizes();
-        setTiles();
-        setPieces(gamePieceWhite, whitePieces);
-        setPieces(gamePieceBlack, blackPieces);
-        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
-        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
-        setLabels();
-        DragNDrop.tiles = tiles;
     }
 
     /**
