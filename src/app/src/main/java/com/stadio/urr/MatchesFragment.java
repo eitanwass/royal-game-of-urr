@@ -57,12 +57,12 @@ public class MatchesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        view.findViewById(R.id.queueMatchButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                queueMatchOnClick(view);
-//            }
-//        });
+        view.findViewById(R.id.quickMatchButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                queueMatchOnClick(view);
+            }
+        });
     }
 
     @Override
