@@ -84,7 +84,7 @@ public class DragNDrop implements View.OnTouchListener {
                 mSocket.emit("move-piece", emissionJson);
 
                 ghostPiece.setVisibility(View.INVISIBLE);
-                GameActivity.updateLabels();
+                GameActivity.Instance.updateLabels();
                 if (newTile.isStart() || newTile.isEnd()) {
                     GameActivity.pushLabelsToFront();
                 }
