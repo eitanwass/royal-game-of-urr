@@ -154,7 +154,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mSocket.on("your-turn", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.d("SETUP_SIDE", otherUsername + ": It is your turn!");
+                Log.d("SETUP_SIDE", "It is your turn!");
                 myTurn = true;
 
                 enableDisablePieces(myColor, true);
@@ -170,7 +170,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 enableMyPieces();
 
-                Log.d("SETUP_SIDE", otherUsername + ": Your color is: " + myColor.toString());
+                Log.d("SETUP_SIDE", "Your color is: " + myColor.toString());
             }
         });
 
@@ -192,6 +192,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
 
+                Log.d("MOVE_PIECE_EVENT", "Moving from tile " + from + " to tile " + to);
+
                 Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
                 Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
                 Piece movedPiece = fromTile.getPiece();
@@ -199,7 +201,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if(movedPiece == null)
                     return;
 
-                DragNDrop.removePieceFromTile(fromTile);
+                fromTile.removePiece();
                 toTile.setPiece(movedPiece);
                 DragNDrop.snapToTile(movedPiece, toTile);
             }
@@ -428,9 +430,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             count += cur;
             die.setImageResource(cur == 1 ? dieUpId : dieDownId);
         }
-        Log.d("INFO", "rollDice: count=" + count);
+//        Log.d("INFO", "rollDice: count=" + count);
         didRoll = true;
         if (count == 0) {
+            Log.d("INFO", "You rolled 0");
             changeTurn();
         }
         return count;
@@ -460,7 +463,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         resetDice();
         if (checkWin()) {
-            Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
+            Log.d("INFO", "changeTurn: " + (myColor == Sides.BLACK ? "Blacks" : "whites") + " Win!");
         }
     }
 

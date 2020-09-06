@@ -37,6 +37,11 @@ public class MultiplePiecesTile extends Tile {
 
     /* --Getters & Setters-- */
 
+    @Override
+    public Piece getPiece() {
+        return this.pieces.get(this.pieces.size() - 1);
+    }
+
     /**
      * Added a piece to the list of pieces on the tile.
      *

@@ -11,27 +11,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainMenuStub">
         </activity>
+
         <activity android:name=".MainActivity">
-        </activity>
-        <activity
-            android:name=".GameActivity"
-            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".GameActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
+
         <activity
             android:name=".RegisterMenuActivity"
             android:screenOrientation="portrait">
         </activity>
+
         <activity
             android:name=".LoginMenuActivity"
             android:screenOrientation="portrait">
         </activity>
+
     </application>
 
 </manifest>

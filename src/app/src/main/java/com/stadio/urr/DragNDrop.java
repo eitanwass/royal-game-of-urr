@@ -218,15 +218,6 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     /**
-     * Removes a piece from a tile.
-     *
-     * @param tile the piece we want to remove.
-     */
-    public static void removePieceFromTile(Tile tile) {
-        tile.setPiece(null);
-    }
-
-    /**
 
      * Find the tile that contains the provided piece.
      * If no tile contains the piece, return the home "tile".
