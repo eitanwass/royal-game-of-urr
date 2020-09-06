@@ -462,10 +462,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (checkWin()) {
             Log.d("INFO", "changeTurn: " + (whitesTurn ? "Blacks" : "whites") + " Win!");
         }
-
-        if (checkWin(Sides.BLACK)) {
-            Log.d("INFO", "changeTurn: " + "Blacks Win!");
-        }
     }
 
     private static boolean checkWin() {
