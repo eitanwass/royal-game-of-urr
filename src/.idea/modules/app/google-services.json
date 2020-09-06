@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "41313862514",
+    "firebase_url": "https://urr-server-6076e.firebaseio.com",
+    "project_id": "urr-server-6076e",
+    "storage_bucket": "urr-server-6076e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41313862514:android:17ae48e8bf68b99ccd93eb",
+        "android_client_info": {
+          "package_name": "com.stadio.urr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "41313862514-js5vmefocloc2irdd7jhh5djjm42965t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stadio.urr",
+            "certificate_hash": "3d528594fd45b6c3fcfd399fc7dace473bd77e9f"
+          }
+        },
+        {
+          "client_id": "41313862514-s8u6m61it0h44g7sm9imb14qhl9i96vl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYDGawt4cTWo6OVHvybc5viLkx9PGoTwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41313862514-s8u6m61it0h44g7sm9imb14qhl9i96vl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
