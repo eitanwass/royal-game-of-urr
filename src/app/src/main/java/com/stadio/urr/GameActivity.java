@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
+    private static int[] lastMovement = {-1, -1};
 
 
     /* --Constants-- */
@@ -177,6 +180,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mSocket.on("move-piece", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+
                 JSONObject obj = null;
                 int from = 0;
                 int to = 0;
@@ -190,20 +194,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
 
+                int[] newMovement = new int[]{from, to};
+
+                if (lastMovement[0] == newMovement[0] && lastMovement[1] == newMovement[1]) {
+                    Log.d("", "Found duplicate movement. Ignored");
+                    return;
+                }
+                Log.d("MOVE_PIECE_EVENT", "Moving from tile " + from + " to tile " + to);
+
                 Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
 
-                Log.d("MOVE_PIECE_EVENT", "Moving from tile " + from + " to tile " + to);
 
                 Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
                 Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
-                Piece movedPiece = fromTile.getPiece();
 
-                if(movedPiece == null)
-                    return;
+                lastMovement = newMovement;
 
-                fromTile.removePiece();
-                toTile.setPiece(movedPiece);
-                DragNDrop.snapToTile(movedPiece, toTile);
+                movePiece(fromTile, toTile);
+
+                GameActivity.Instance.updateLabels();
             }
         });
     }
@@ -241,6 +250,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /* --Public Methods-- */
+
+    /**
+     * Moves a piece from tile from to tile to.
+     *
+     * @param from The tile we want to move a piece from.
+     * @param to The tile we want to move the piece to.
+     */
+    public static void movePiece(Tile from, Tile to) {
+
+        if (from.isEmpty()) {
+            Log.d("", "FromTile " + from.getIndex() + " is empty!");
+//            throw new InvalidParameterException("No piece on tile");
+            return;
+        }
+
+        Piece movedPiece = from.getPiece();
+
+        if (!to.isEmpty() && to.getPiece().side != movedPiece.side) {
+            Log.d("", "Eating tile at " + to.getIndex());
+            movePiece(to, to.getPiece().getStartTile());
+        }
+
+        from.removePiece();
+        to.setPiece(movedPiece);
+        DragNDrop.snapToTile(movedPiece, to);
+    }
 
     /**
      * Gets the width and height of the screen in DP.
@@ -364,16 +399,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * Updates the number on all of the labels.
      */
     @SuppressLint("SetTextI18n")
-    public static void updateLabels() {
-        for (TextView label : starts_ends.keySet()) {
-            int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
-            if (numberOfPieces == 0) {
-                label.setVisibility(View.INVISIBLE);
-            } else {
-                label.setVisibility(View.VISIBLE);
+    public void updateLabels() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (TextView label : starts_ends.keySet()) {
+                    int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
+                    if (numberOfPieces == 0) {
+                        label.setVisibility(View.INVISIBLE);
+                    } else {
+                        label.setVisibility(View.VISIBLE);
+                    }
+                    label.setText("" + numberOfPieces);
+                }
             }
-            label.setText("" + numberOfPieces);
-        }
+        });
     }
 
     /**
@@ -458,6 +498,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static void changeTurn(){
         myTurn = false;
         mSocket.emit("pass-turn");
+        lastMovement = new int[]{-1, -1};
 
         GameActivity.Instance.enableDisablePieces(myColor, false);
 

@@ -77,6 +77,9 @@ public class MultiplePiecesTile extends Tile {
         return pieces.size();
     }
 
+
+    /* --Public Methods-- */
+
     /**
      * Check if a piece is on this tile.
      * @param piece The piece we want to check if it's on our tile.
@@ -85,5 +88,14 @@ public class MultiplePiecesTile extends Tile {
     @Override
     public boolean checkPiece(Piece piece) {
         return this.pieces.contains(piece);
+    }
+
+    /**
+     * Checks if the tile has any pieces on it.
+     * @return True if empty false if not.
+     */
+    @Override
+    public boolean isEmpty() {
+        return pieces.isEmpty();
     }
 }
