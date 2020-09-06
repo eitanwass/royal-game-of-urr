@@ -5,6 +5,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
@@ -17,6 +24,15 @@ public class DragNDrop implements View.OnTouchListener {
 
     public static ArrayList<Tile> tiles;
     private Piece ghostPiece;
+
+    private static Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://10.0.2.2");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Initializes a DragNDrop object.
@@ -57,6 +73,16 @@ public class DragNDrop implements View.OnTouchListener {
 
             case MotionEvent.ACTION_UP:
                 Tile newTile = getNewTile(selectedPiece, startingTile);
+
+                JSONObject emissionJson = new JSONObject();
+                try {
+                    emissionJson.put("from", startingTile.getIndex());
+                    emissionJson.put("to", newTile.getIndex());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mSocket.emit("move-piece", emissionJson);
+
                 ghostPiece.setVisibility(View.INVISIBLE);
                 GameActivity.updateLabels();
                 if (newTile.isStart() || newTile.isEnd()) {
@@ -98,7 +124,7 @@ public class DragNDrop implements View.OnTouchListener {
      * @return The tile in question.
      * @throws InvalidParameterException If a tile doesn't exist for the provided index and color side.
      */
-    private Tile getTileByIndex(int tileIndex, int colorSide) {
+    public static Tile getTileByIndex(int tileIndex, int colorSide) {
         for (Tile tile : tiles) {
             if (tile.getIndex() == tileIndex && tile.canLand(colorSide)) {
                 return tile;
@@ -192,6 +218,16 @@ public class DragNDrop implements View.OnTouchListener {
     }
 
     /**
+     * Removes a piece from a tile.
+     *
+     * @param tile the piece we want to remove.
+     */
+    public static void removePieceFromTile(Tile tile) {
+        tile.setPiece(null);
+    }
+
+    /**
+
      * Find the tile that contains the provided piece.
      * If no tile contains the piece, return the home "tile".
      *

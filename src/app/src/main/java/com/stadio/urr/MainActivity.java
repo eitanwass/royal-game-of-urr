@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     {
         try {
             IO.Options opts = new IO.Options();
-//            opts.port = 433;
             opts.transports = new String[] {Polling.NAME};
             this.mSocket = IO.socket("http://10.0.2.2");
         } catch (URISyntaxException e) {
@@ -106,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void GoToLoginPage() {
         LOGGER.log(Level.INFO, "Go to login.");
+
         Intent loginIntent = new Intent(getApplicationContext(), LoginMenuActivity.class);
         startActivity(loginIntent);
     }
