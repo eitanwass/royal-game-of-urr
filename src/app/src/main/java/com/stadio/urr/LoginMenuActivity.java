@@ -117,7 +117,7 @@ public class LoginMenuActivity extends AppCompatActivity {
 
 //        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
 //        startActivity(gameStartActivity);
-        Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuStub.class);
+        Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuActivity.class);
         mainMenuActivity.putExtras(bundle);
         startActivity(mainMenuActivity);
     }
