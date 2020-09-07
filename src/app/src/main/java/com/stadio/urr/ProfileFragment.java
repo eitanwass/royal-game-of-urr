@@ -37,7 +37,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
@@ -45,15 +45,6 @@ public class ProfileFragment extends Fragment {
     private Bitmap avatar;
 
     private ImageView profileImageView;
-
-    private Socket mSocket;
-    {
-        try {
-            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     @Override
@@ -69,19 +60,13 @@ public class ProfileFragment extends Fragment {
 
         getReferences();
 
-        loadAvatarBitmap();
-
-        if(avatar == null) {
-            JSONObject emissionJson = new JSONObject();
-            try {
-                emissionJson.put("email", AccountDetails.email);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            mSocket.emit("get-avatar", emissionJson);
-        } else {
-            profileImageView.setImageBitmap(avatar);
+        JSONObject emissionJson = new JSONObject();
+        try {
+            emissionJson.put("email", AccountDetails.email);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        AccountDetails.socket.emit("get-avatar", emissionJson);
     }
 
     @Override
@@ -96,7 +81,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void ListenForEvents() {
-        mSocket.on("avatar-image", new Emitter.Listener() {
+        AccountDetails.socket.on("avatar-image", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 String imageBase64 = args[0].toString().split(",")[1];
@@ -106,31 +91,7 @@ public class ProfileFragment extends Fragment {
 
                 avatar = bitmap;
                 profileImageView.setImageBitmap(avatar);
-
-                ContextWrapper wrapper = new ContextWrapper(getActivity());
-                File file = wrapper.getDir("Images",MODE_PRIVATE);
-                file = new File(file, "UserAvatar.png");
-
-                try {
-                    OutputStream stream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-                    stream.flush();
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("", "Got and saved avatar");
             }
         });
-    }
-
-    private void loadAvatarBitmap() {
-        ContextWrapper wrapper = new ContextWrapper(getActivity().getApplicationContext());
-        File file = wrapper.getDir("Images",MODE_PRIVATE);
-        file = new File(file, "UserAvatar.png");
-        avatar = BitmapFactory.decodeFile(file.getAbsolutePath());
-
-        Log.d("", "Got and loaded avatar");
     }
 }
