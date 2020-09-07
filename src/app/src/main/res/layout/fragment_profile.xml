@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MatchesFragment">
+    tools:context=".MatchesFragment"
+    android:background="@color/colorBackground">
 
     <ImageView
         android:id="@+id/edit_photo"
@@ -18,8 +19,9 @@
         android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="45dp"
         app:cardCornerRadius="75dp"
+        app:cardElevation="20dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,16 +42,21 @@
         android:text="UserName"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:fontFamily="@font/roboto_light"/>
 
     <TextView
         android:id="@+id/wins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/allerta"
         android:text="Wins"
+        android:textColor="#000000"
         android:textSize="36sp"
-        app:layout_constraintEnd_toStartOf="@+id/loses"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -57,44 +64,54 @@
         android:id="@+id/loses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:text="Loses"
+        android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/wins"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wins"
-        app:layout_constraintTop_toTopOf="@+id/wins" />
+        app:layout_constraintTop_toTopOf="@+id/wins"
+        android:fontFamily="@font/allerta"/>
 
     <TextView
         android:id="@+id/wins_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="0"
+        android:textColor="#000000"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/wins"
         app:layout_constraintStart_toStartOf="@+id/wins"
-        app:layout_constraintTop_toBottomOf="@+id/wins" />
+        app:layout_constraintTop_toBottomOf="@+id/wins"
+        android:fontFamily="@font/allerta"/>
 
     <TextView
         android:id="@+id/loses_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="0"
+        android:textColor="#000000"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/loses"
         app:layout_constraintStart_toStartOf="@+id/loses"
-        app:layout_constraintTop_toBottomOf="@+id/loses" />
+        app:layout_constraintTop_toBottomOf="@+id/loses"
+        android:fontFamily="@font/allerta"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
+        android:layout_width="223dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wins_num" />
+        android:scaleY="4"
+        app:layout_constraintBottom_toBottomOf="@+id/wins_num"
+        app:layout_constraintEnd_toStartOf="@+id/loses_num"
+        app:layout_constraintStart_toEndOf="@+id/wins_num"
+        app:layout_constraintTop_toTopOf="@+id/wins_num"
+        android:progressBackgroundTint="@color/losses"
+        android:progressTint="@color/wins"
+        android:progress="25"
+        android:progressBackgroundTintMode="src_over"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

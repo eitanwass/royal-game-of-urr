@@ -4,8 +4,8 @@
     <string name="profile">Profile</string>
     <string name="matches">Matches</string>
     <string name="quick_match">Quick Match</string>
-    <string name="join">Join a Room</string>
-    <string name="create_room">Create a Room</string>
+    <string name="join">Join</string>
+    <string name="create_room">Create</string>
     <string name="music">Music</string>
     <string name="sound_effects">Sound Effect</string>
     <string name="log_out">Log Out</string>
