@@ -16,7 +16,7 @@
         android:layout_above="@id/constraint_layout_dice"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="249dp"
-        android:layout_marginBottom="51dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/invincibility_tile"
         app:tile_index="13"
         custom:exclusive_to="white"
@@ -396,10 +396,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_dice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="722dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp">
+        android:layout_marginBottom="15dp">
 
         <ImageView
             android:id="@+id/dice1"
@@ -440,7 +440,7 @@
 
         <ImageButton
             android:id="@+id/dice_roll_button"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:background="@drawable/dice_roll_button"
             app:layout_constraintEnd_toStartOf="@+id/dice1"
@@ -501,5 +501,105 @@
         android:gravity="center"
         android:text="0"
         android:textColor="#000000" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        custom:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:cardCornerRadius="25dp"
+            custom:cardPreventCornerOverlap="false"
+            custom:layout_constraintBottom_toTopOf="@id/firstPlayerUser"
+            custom:layout_constraintEnd_toEndOf="parent"
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/firstPlayerPic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_launcher_background" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/firstPlayerUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_light"
+            android:text="TextView"
+            android:textColor="#000000"
+            custom:layout_constraintBottom_toBottomOf="parent"
+            custom:layout_constraintEnd_toEndOf="@+id/cardView"
+            custom:layout_constraintStart_toStartOf="@+id/cardView"
+            custom:layout_constraintTop_toBottomOf="@id/cardView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            custom:cardCornerRadius="25dp"
+            custom:cardPreventCornerOverlap="false"
+            custom:layout_constraintBottom_toTopOf="@id/secondPlayerUser"
+            custom:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/secondPlayerPic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_launcher_background" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/secondPlayerUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_light"
+            android:text="TextView"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/cardView2"
+            app:layout_constraintStart_toStartOf="@+id/cardView2"
+            app:layout_constraintTop_toBottomOf="@id/cardView2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/constraintLayoutPlayer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/allerta"
+        android:gravity="center"
+        android:text="Awwwww"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
