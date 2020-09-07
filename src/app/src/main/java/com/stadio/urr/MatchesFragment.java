@@ -30,25 +30,9 @@ import java.net.URISyntaxException;
  */
 public class MatchesFragment extends Fragment {
 
-    private Socket mSocket;
-    {
-        try {
-            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String thisEmail = "";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle bundle = getActivity().getIntent().getExtras();
-        if(bundle != null) {
-            thisEmail = bundle.getString("UserEmail");
-        }
 
         ListenForEvents();
     }
@@ -73,14 +57,14 @@ public class MatchesFragment extends Fragment {
     }
 
     public void ListenForEvents() {
-        mSocket.on("joined-queue", new Emitter.Listener() {
+        AccountDetails.socket.on("joined-queue", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Log.d("", "Looking For Match...");
             }
         });
 
-        mSocket.on("found-match", new Emitter.Listener() {
+        AccountDetails.socket.on("found-match", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 String otherUserUsername = args[0].toString();
@@ -103,10 +87,10 @@ public class MatchesFragment extends Fragment {
     public void queueMatchOnClick(View view) {
         JSONObject emissionJson = new JSONObject();
         try {
-            emissionJson.put("username", thisEmail);
+            emissionJson.put("username", AccountDetails.email);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mSocket.emit("quick_match", emissionJson);
+        AccountDetails.socket.emit("quick_match", emissionJson);
     }
 }

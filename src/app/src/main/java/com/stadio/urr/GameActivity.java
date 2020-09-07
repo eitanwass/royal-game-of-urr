@@ -63,15 +63,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static String otherUsername = "";
 
-    private static Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static int[] lastMovement = {-1, -1};
 
 
@@ -140,7 +131,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
 
-        mSocket.emit("joined-game");
+        AccountDetails.socket.emit("joined-game");
     }
 
     /**
@@ -173,7 +164,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void ListenForEvents() {
-        mSocket.on("your-turn", new Emitter.Listener() {
+        AccountDetails.socket.on("your-turn", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Log.d("SETUP_SIDE", "It is your turn!");
@@ -183,7 +174,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mSocket.on("setup-side", new Emitter.Listener() {
+        AccountDetails.socket.on("setup-side", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 int colorSide = Integer.parseInt(args[0].toString());
@@ -196,7 +187,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mSocket.on("move-piece", new Emitter.Listener() {
+        AccountDetails.socket.on("move-piece", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
 
@@ -499,7 +490,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void changeTurn(){
         myTurn = false;
-        mSocket.emit("pass-turn");
+        AccountDetails.socket.emit("pass-turn");
         lastMovement = new int[]{-1, -1};
 
         GameActivity.Instance.enableDisablePieces(myColor, false);

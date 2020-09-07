@@ -10,28 +10,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoginMenuActivity extends AppCompatActivity {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
-    private Socket mSocket;
-    {
-        try {
-            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -60,7 +49,7 @@ public class LoginMenuActivity extends AppCompatActivity {
     }
 
     public void ListenForEvents() {
-        mSocket.on("login-success", new Emitter.Listener() {
+        AccountDetails.socket.on("login-success", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 displayMessage(args[0].toString());
@@ -71,7 +60,7 @@ public class LoginMenuActivity extends AppCompatActivity {
             }
         });
 
-        mSocket.on("login-failed", new Emitter.Listener() {
+        AccountDetails.socket.on("login-failed", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 displayMessage(args[0].toString());
@@ -82,7 +71,7 @@ public class LoginMenuActivity extends AppCompatActivity {
     public void loginOnClick(View view) {
         progressBar.setVisibility(View.VISIBLE);
 
-        sendLoginData(mSocket);
+        sendLoginData(AccountDetails.socket);
     }
 
     private void sendLoginData(Socket socket) {
@@ -114,11 +103,8 @@ public class LoginMenuActivity extends AppCompatActivity {
 
     private void StartGame() {
         LOGGER.log(Level.INFO, "Start game in online mode.");
-        Bundle bundle = new Bundle();
-        bundle.putString("UserEmail", enteredEmail);
 
         Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuActivity.class);
-        mainMenuActivity.putExtras(bundle);
         startActivity(mainMenuActivity);
     }
 
