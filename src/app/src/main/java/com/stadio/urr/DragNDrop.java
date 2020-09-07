@@ -28,7 +28,7 @@ public class DragNDrop implements View.OnTouchListener {
     private static Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://10.0.2.2");
+            mSocket = IO.socket("https://urr-server.herokuapp.com/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

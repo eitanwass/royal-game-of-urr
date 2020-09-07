@@ -33,7 +33,7 @@ public class MatchesFragment extends Fragment {
     private Socket mSocket;
     {
         try {
-            this.mSocket = IO.socket("http://10.0.2.2");
+            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

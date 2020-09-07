@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             IO.Options opts = new IO.Options();
             opts.transports = new String[] {Polling.NAME};
-            this.mSocket = IO.socket("http://10.0.2.2");
+            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
