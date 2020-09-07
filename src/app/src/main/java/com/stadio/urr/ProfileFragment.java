@@ -1,5 +1,6 @@
 package com.stadio.urr;
 
+import android.accounts.Account;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,9 @@ import android.widget.ImageView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,7 +72,13 @@ public class ProfileFragment extends Fragment {
         loadAvatarBitmap();
 
         if(avatar == null) {
-            mSocket.emit("get-avatar");
+            JSONObject emissionJson = new JSONObject();
+            try {
+                emissionJson.put("email", AccountDetails.email);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit("get-avatar", emissionJson);
         } else {
             profileImageView.setImageBitmap(avatar);
         }

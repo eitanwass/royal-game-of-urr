@@ -65,6 +65,8 @@ public class LoginMenuActivity extends AppCompatActivity {
             public void call(Object... args) {
                 displayMessage(args[0].toString());
 
+                AccountDetails.email = enteredEmail;
+
                 StartGame();
             }
         });
@@ -115,8 +117,6 @@ public class LoginMenuActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("UserEmail", enteredEmail);
 
-//        Intent gameStartActivity = new Intent(getApplicationContext(), GameActivity.class);
-//        startActivity(gameStartActivity);
         Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuActivity.class);
         mainMenuActivity.putExtras(bundle);
         startActivity(mainMenuActivity);
