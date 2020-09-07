@@ -1,35 +1,21 @@
 package com.stadio.urr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.engineio.client.transports.Polling;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Socket mSocket;
-    {
-        try {
-            IO.Options opts = new IO.Options();
-            opts.transports = new String[] {Polling.NAME};
-            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -45,15 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         getReferences();
 
-        LOGGER.log(Level.INFO, mSocket.toString());
-
-        mSocket.connect();
+        AccountDetails.socket.connect();
 
         tryConnect();
     }
 
     private void tryConnect() {
-        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+        AccountDetails.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 displayMessage("--Connected to server--");

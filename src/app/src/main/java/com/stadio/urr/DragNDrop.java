@@ -25,15 +25,6 @@ public class DragNDrop implements View.OnTouchListener {
     public static ArrayList<Tile> tiles;
     private Piece ghostPiece;
 
-    private static Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Initializes a DragNDrop object.
      */
@@ -81,7 +72,7 @@ public class DragNDrop implements View.OnTouchListener {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mSocket.emit("move-piece", emissionJson);
+                AccountDetails.socket.emit("move-piece", emissionJson);
 
                 ghostPiece.setVisibility(View.INVISIBLE);
                 GameActivity.Instance.updateLabels();

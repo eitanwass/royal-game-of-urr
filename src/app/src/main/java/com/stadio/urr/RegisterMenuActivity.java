@@ -34,15 +34,6 @@ import java.net.URISyntaxException;
 
 public class RegisterMenuActivity extends AppCompatActivity {
 
-    private Socket mSocket;
-    {
-        try {
-            this.mSocket = IO.socket("https://urr-server.herokuapp.com/");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
     private TextView repeatPasswordErrorTextView;
 
     private EditText usernameEditText;
@@ -78,7 +69,7 @@ public class RegisterMenuActivity extends AppCompatActivity {
     }
 
     public void ListenForEvents() {
-        mSocket.on("register-success", new Emitter.Listener() {
+        AccountDetails.socket.on("register-success", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 displayMessage(args[0].toString());
@@ -88,14 +79,14 @@ public class RegisterMenuActivity extends AppCompatActivity {
             }
         });
 
-        mSocket.on("register-failed", new Emitter.Listener() {
+        AccountDetails.socket.on("register-failed", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 displayMessage(args[0].toString());
             }
         });
 
-        mSocket.on("avatar-image", new Emitter.Listener() {
+        AccountDetails.socket.on("avatar-image", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 String imageBase64 = args[0].toString().split(",")[1];
@@ -122,12 +113,12 @@ public class RegisterMenuActivity extends AppCompatActivity {
     }
 
     public void registerOnClick(View view) {
-        sendRegisterData(mSocket);
+        sendRegisterData();
 
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void sendRegisterData(Socket socket){
+    private void sendRegisterData(){
         String username = usernameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -141,7 +132,7 @@ public class RegisterMenuActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit("register", emissionJson);
+        AccountDetails.socket.emit("register", emissionJson);
     }
 
     private void displayMessage(final String displayMessage) {
