@@ -85,31 +85,6 @@ public class RegisterMenuActivity extends AppCompatActivity {
                 displayMessage(args[0].toString());
             }
         });
-
-        AccountDetails.socket.on("avatar-image", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String imageBase64 = args[0].toString().split(",")[1];
-                byte[] imageBytes = Base64.decode(imageBase64, Base64.DEFAULT);
-
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-
-                ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
-                File file = wrapper.getDir("Images",MODE_PRIVATE);
-                file = new File(file, "UserAvatar.png");
-
-                try {
-                    OutputStream stream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-                    stream.flush();
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("", "Got and saved avatar");
-            }
-        });
     }
 
     public void registerOnClick(View view) {

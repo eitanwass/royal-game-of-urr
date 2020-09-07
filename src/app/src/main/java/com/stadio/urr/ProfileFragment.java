@@ -60,19 +60,13 @@ public class ProfileFragment extends Fragment {
 
         getReferences();
 
-        loadAvatarBitmap();
-
-        if(avatar == null) {
-            JSONObject emissionJson = new JSONObject();
-            try {
-                emissionJson.put("email", AccountDetails.email);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            AccountDetails.socket.emit("get-avatar", emissionJson);
-        } else {
-            profileImageView.setImageBitmap(avatar);
+        JSONObject emissionJson = new JSONObject();
+        try {
+            emissionJson.put("email", AccountDetails.email);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        AccountDetails.socket.emit("get-avatar", emissionJson);
     }
 
     @Override
@@ -97,31 +91,7 @@ public class ProfileFragment extends Fragment {
 
                 avatar = bitmap;
                 profileImageView.setImageBitmap(avatar);
-
-                ContextWrapper wrapper = new ContextWrapper(getActivity());
-                File file = wrapper.getDir("Images",MODE_PRIVATE);
-                file = new File(file, "UserAvatar.png");
-
-                try {
-                    OutputStream stream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-                    stream.flush();
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("", "Got and saved avatar");
             }
         });
-    }
-
-    private void loadAvatarBitmap() {
-        ContextWrapper wrapper = new ContextWrapper(getActivity().getApplicationContext());
-        File file = wrapper.getDir("Images",MODE_PRIVATE);
-        file = new File(file, "UserAvatar.png");
-        avatar = BitmapFactory.decodeFile(file.getAbsolutePath());
-
-        Log.d("", "Got and loaded avatar");
     }
 }
