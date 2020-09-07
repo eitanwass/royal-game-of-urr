@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainMenuActivity">
+    tools:context=".MainMenuActivity"
+    android:background="@color/colorBackground">
 
   <FrameLayout
       android:id="@+id/frame_container"
@@ -32,6 +33,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:menu="@menu/bottom_navigation_menu"
       android:background="@color/colorPrimary"
-      app:itemIconTint="@android:color/white"
+      app:itemIconTint="@color/colorBackground"
       app:itemTextColor="@android:color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
