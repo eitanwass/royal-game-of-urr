@@ -60,7 +60,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static ImageView[] dice;
     private static Map<TextView, MultiplePiecesTile> starts_ends;
     private static TextView messages;
-    public static MediaPlayer mediaPlayer;
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
@@ -129,7 +128,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tiles = new ArrayList<>();
         whitePieces = new ArrayList<>();
         blackPieces = new ArrayList<>();
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.pop_sound);
 
         dice = new ImageView[NUMBER_OF_DICE];
         dice[0] = findViewById(R.id.dice1);
@@ -455,7 +453,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.dice_roll_button) {
-            currentRoll = rollDice();
             if (myTurn) {
                 if (!didRoll)
                     currentRoll = rollDice();
@@ -550,8 +547,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public static void playSound(int sound) {
         if (playSound) {
-            mediaPlayer = MediaPlayer.create(GameActivity.Instance, sound);
+            MediaPlayer mediaPlayer = MediaPlayer.create(GameActivity.Instance, sound);
             mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.release();
+                }
+            });
         }
     }
 }
