@@ -5,8 +5,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -53,6 +56,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Piece gamePieceBlack;
     private static ImageView[] dice;
     private static Map<TextView, MultiplePiecesTile> starts_ends;
+    private static TextView messages;
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
@@ -68,13 +72,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     /* --Constants-- */
 
+    private final int OFFSET = 10;
     private final static int NUMBER_OF_DICE = 4;
     private final static int NUMBER_OF_PIECES = 7;
     private final static float NUMBER_OF_TILES_HORIZONTAL = 8;
     private final static float NUMBER_OF_TILES_VERTICAL = 3;
     public final static int PATH_LENGTH = 15;
 
-    private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
+    private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 75 / 100;
     private final static float TILE_PERCENT_OF_SCREEN = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_HORIZONTAL;
     private final static float PIECE_PERCENTAGE_FROM_TILE = 0.75f;
 
@@ -110,6 +115,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         getReferences();
 
+        messages = findViewById(R.id.messages);
 
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
@@ -306,9 +312,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         float diceHeight = constraintLayoutDice.getHeight();
         float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
         float marginBottom = convertDpToPixel(
-                (height_dp - diceHeight - tileSize * NUMBER_OF_TILES_VERTICAL) / 2, getApplicationContext());
+                (height_dp - diceHeight - tileSize * NUMBER_OF_TILES_VERTICAL - OFFSET) / 2, getApplicationContext());
         float margin_right = convertDpToPixel(
-                (width_dp - tileSize * NUMBER_OF_TILES_HORIZONTAL) / 2, getApplicationContext());
+                (width_dp  - tileSize * NUMBER_OF_TILES_HORIZONTAL) / 2, getApplicationContext());
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rootTile.getLayoutParams();
         params.setMargins(0, 0, (int) margin_right, (int) marginBottom);
@@ -467,9 +473,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         didRoll = true;
         if (count == 0) {
             Log.d("INFO", "You rolled 0");
+            indicate0();
             changeTurn();
         }
         return count;
+    }
+
+    private void indicate0() {
+        messages.setVisibility(View.VISIBLE);
+        messages.setText(R.string.rolled_0);
+        Handler handler=new Handler();
+        Runnable r=new Runnable() {
+            public void run() {
+                messages.setVisibility(View.INVISIBLE);
+            }
+        };
+        handler.postDelayed(r, 2000);
     }
 
     /**
