@@ -16,4 +16,8 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="email_example">name@service.com</string>
+    <string name="email">Email:</string>
+    <string name="Password">Password:</string>
+    <string name="repeat_password">Repeat Password:</string>
+    <string name="password_hint">*******</string>
 </resources>
