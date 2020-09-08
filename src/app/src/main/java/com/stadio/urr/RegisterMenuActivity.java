@@ -49,6 +49,10 @@ public class RegisterMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_menu);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         getReferences();
 
         repeatPasswordEditText.addTextChangedListener( new RepeatPasswordTextWatched());
