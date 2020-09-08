@@ -1,6 +1,7 @@
 package com.stadio.urr;
 
 import android.annotation.SuppressLint;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -159,6 +160,7 @@ public class DragNDrop implements View.OnTouchListener {
 
             startingTile.removePiece();
             destinationTile.setPiece(piece);
+            GameActivity.playPopSound();
             if (destinationTile.isAnotherTurn()) {
                 GameActivity.anotherTurn();
             }

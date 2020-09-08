@@ -5,8 +5,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static ImageView[] dice;
     private static Map<TextView, MultiplePiecesTile> starts_ends;
     private static TextView messages;
+    public static MediaPlayer mediaPlayer;
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
@@ -64,6 +68,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private float width_dp;
     private float height_dp;
+
+    private static boolean playSound;
 
     private static String otherUsername = "";
 
@@ -123,6 +129,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tiles = new ArrayList<>();
         whitePieces = new ArrayList<>();
         blackPieces = new ArrayList<>();
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.pop_sound);
 
         dice = new ImageView[NUMBER_OF_DICE];
         dice[0] = findViewById(R.id.dice1);
@@ -136,6 +143,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         starts_ends.put((TextView) findViewById(R.id.pieces_left_start_black), (MultiplePiecesTile) findViewById(R.id.start_black));
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
+
+        playSound = bundle.getBoolean(getString(R.string.sound_effects));
 
         AccountDetails.socket.emit("joined-game");
     }
@@ -281,6 +290,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
+        playPopSound();
         Piece movedPiece = from.getPiece();
 
         if (!to.isEmpty() && to.getPiece().side != movedPiece.side) {
@@ -445,6 +455,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.dice_roll_button) {
+            currentRoll = rollDice();
             if (myTurn) {
                 if (!didRoll)
                     currentRoll = rollDice();
@@ -534,5 +545,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void anotherTurn() {
         resetDice();
+    }
+
+    public static void playPopSound() {
+        if (playSound) {
+            mediaPlayer.start();
+        }
     }
 }
