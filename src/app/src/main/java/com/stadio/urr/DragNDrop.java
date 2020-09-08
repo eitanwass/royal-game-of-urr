@@ -160,7 +160,7 @@ public class DragNDrop implements View.OnTouchListener {
 
             startingTile.removePiece();
             destinationTile.setPiece(piece);
-            GameActivity.playPopSound();
+            GameActivity.playSound(R.raw.pop_sound);
             if (destinationTile.isAnotherTurn()) {
                 GameActivity.anotherTurn();
             }

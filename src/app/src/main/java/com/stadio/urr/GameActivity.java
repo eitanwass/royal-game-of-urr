@@ -290,7 +290,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        playPopSound();
+        playSound(R.raw.pop_sound);
         Piece movedPiece = from.getPiece();
 
         if (!to.isEmpty() && to.getPiece().side != movedPiece.side) {
@@ -469,6 +469,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * @return The sum of the dice.
      */
     private int rollDice() {
+        playSound(R.raw.dice_sound);
         Random random = new Random();
         int dieUpId = R.drawable.pyramid_die_up;
         int dieDownId = R.drawable.pyramid_die_down;
@@ -547,8 +548,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         resetDice();
     }
 
-    public static void playPopSound() {
+    public static void playSound(int sound) {
         if (playSound) {
+            mediaPlayer = MediaPlayer.create(GameActivity.Instance, sound);
             mediaPlayer.start();
         }
     }
