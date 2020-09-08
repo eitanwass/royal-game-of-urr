@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,6 +81,7 @@ public class MatchesFragment extends Fragment {
 
         Intent gameStartActivity = new Intent(getActivity(), GameActivity.class);
         gameStartActivity.putExtras(bundle);
+        gameStartActivity.putExtra(getString(R.string.sound_effects), ((SwitchMaterial) getActivity().findViewById(R.id.sound_effect_toggle)).isChecked());
         startActivity(gameStartActivity);
     }
 
