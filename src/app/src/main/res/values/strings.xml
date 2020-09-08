@@ -12,4 +12,8 @@
     <string name="change_user_name">Change User Name</string>
     <string name="change_password">Change Password</string>
     <string name="rolled_0">Awwwwwww</string>
+    <string name="register_here">Don\'t have an account? Register Here!</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email_example">name@service.com</string>
 </resources>

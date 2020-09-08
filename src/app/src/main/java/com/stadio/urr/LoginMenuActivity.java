@@ -35,6 +35,10 @@ public class LoginMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_menu);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         getReferences();
 
         ListenForEvents();
@@ -96,6 +100,7 @@ public class LoginMenuActivity extends AppCompatActivity {
             @Override
             public void run() {
                 progressBar.setVisibility(View.INVISIBLE);
+                errorTextView.setVisibility(View.VISIBLE);
                 errorTextView.setText(displayMessage);
             }
         });
