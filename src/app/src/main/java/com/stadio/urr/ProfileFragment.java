@@ -1,15 +1,7 @@
 package com.stadio.urr;
 
-import android.accounts.Account;
-import android.content.ContextWrapper;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,23 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +24,6 @@ import static android.content.Context.MODE_PRIVATE;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-
-    private Bitmap avatar;
 
     private ImageView profileImageView;
 
@@ -60,13 +41,18 @@ public class ProfileFragment extends Fragment {
 
         getReferences();
 
-        JSONObject emissionJson = new JSONObject();
-        try {
-            emissionJson.put("email", AccountDetails.email);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(AccountDetails.avatar == null) {
+            JSONObject emissionJson = new JSONObject();
+            try {
+                emissionJson.put("email", AccountDetails.email);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            AccountDetails.socket.emit("get-avatar", emissionJson);
+            Log.d("", "Requested avatar");
+        } else {
+            setProfile();
         }
-        AccountDetails.socket.emit("get-avatar", emissionJson);
     }
 
     @Override
@@ -87,10 +73,19 @@ public class ProfileFragment extends Fragment {
                 String imageBase64 = args[0].toString().split(",")[1];
                 byte[] imageBytes = Base64.decode(imageBase64, Base64.DEFAULT);
 
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                AccountDetails.avatar = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
-                avatar = bitmap;
-                profileImageView.setImageBitmap(avatar);
+                setProfile();
+            }
+        });
+    }
+
+
+    private void setProfile() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                profileImageView.setImageBitmap(AccountDetails.avatar);
             }
         });
     }

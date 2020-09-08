@@ -1,5 +1,7 @@
 package com.stadio.urr;
 
+import android.graphics.Bitmap;
+
 import com.github.nkzawa.engineio.client.transports.Polling;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -19,4 +21,6 @@ public class AccountDetails {
 
     public static String email;
     public static String username;
+
+    public static Bitmap avatar;
 }
