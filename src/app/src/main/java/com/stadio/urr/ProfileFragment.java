@@ -36,8 +36,8 @@ public class ProfileFragment extends Fragment {
 
     private ProgressBar winsLossesRatioBar;
 
-    private Activity currentActivity = null;
 
+    private Activity currentActivity = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

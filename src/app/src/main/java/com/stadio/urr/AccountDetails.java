@@ -1,5 +1,6 @@
 package com.stadio.urr;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 
 import com.github.nkzawa.engineio.client.transports.Polling;
@@ -27,4 +28,11 @@ public class AccountDetails {
     public static int losses = 0;
 
     public static Bitmap avatar;
+
+    public static void disconnect(Activity activity) {
+        socket.off();
+        socket.disconnect();
+        socket.close();
+        activity.finish();
+    }
 }
