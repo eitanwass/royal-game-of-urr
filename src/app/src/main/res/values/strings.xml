@@ -20,4 +20,5 @@
     <string name="Password">Password:</string>
     <string name="repeat_password">Repeat Password:</string>
     <string name="password_hint">*******</string>
+    <string name="cancel_queue">Cancel Queue</string>
 </resources>

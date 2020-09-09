@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xsl="http://schemas.android.com/aapt">
+
     <item
         android:drawable="@drawable/quick_join_icon"
         android:duration="75"/>
@@ -14,5 +16,21 @@
 
     <item
         android:drawable="@drawable/quick_join_icon4"
+        android:duration="75"/>
+
+    <item
+        android:drawable="@drawable/quick_join_icon5"
+        android:duration="75"/>
+
+    <item
+        android:drawable="@drawable/quick_join_icon6"
+        android:duration="75"/>
+
+    <item
+        android:drawable="@drawable/quick_join_icon7"
+        android:duration="75"/>
+
+    <item
+        android:drawable="@drawable/quick_join_icon8"
         android:duration="75"/>
 </animation-list>
