@@ -7,7 +7,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +71,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private float height_dp;
 
     private static boolean playSound;
+    private boolean firstSetUp = true;
 
     private static String otherUsername = "";
 
@@ -154,15 +157,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * @param hasFocus Does the window have focus.
      */
     public void onWindowFocusChanged(boolean hasFocus) {
-        getSizes();
-        setTiles();
-        setPieces(gamePieceWhite, whitePieces);
-        setPieces(gamePieceBlack, blackPieces);
-        enableMyPieces();
-        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
-        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
-        setLabels();
-        DragNDrop.tiles = tiles;
+        if (firstSetUp) {
+            getSizes();
+            setTiles();
+            setPieces(gamePieceWhite, whitePieces);
+            setPieces(gamePieceBlack, blackPieces);
+            enableMyPieces();
+            ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
+            ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+            setLabels();
+            DragNDrop.tiles = tiles;
+            firstSetUp = false;
+        }
     }
 
 
@@ -556,5 +562,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        GameExitDialog gameExitDialog=new GameExitDialog(this);
+        gameExitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        gameExitDialog.show();
     }
 }
