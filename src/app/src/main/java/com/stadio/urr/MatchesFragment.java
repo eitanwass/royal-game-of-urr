@@ -98,6 +98,7 @@ public class MatchesFragment extends Fragment {
 
     private void cancelQueue() {
         queueAnimation.stop();
+        AccountDetails.socket.emit("cancel-match");
         ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.quick_match));
         in_queue = false;
     }
@@ -107,13 +108,7 @@ public class MatchesFragment extends Fragment {
         if (!in_queue) {
             queueAnimation.start();
             ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.cancel_queue));
-            JSONObject emissionJson = new JSONObject();
-            try {
-                emissionJson.put("username", AccountDetails.email);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            AccountDetails.socket.emit("quick_match", emissionJson);
+            AccountDetails.socket.emit("quick-match");
             in_queue = true;
         } else {
             cancelQueue();
