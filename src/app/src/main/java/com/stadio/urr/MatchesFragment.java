@@ -2,6 +2,8 @@ package com.stadio.urr;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -30,6 +33,8 @@ import java.net.URISyntaxException;
  * create an instance of this fragment.
  */
 public class MatchesFragment extends Fragment {
+    AnimationDrawable queueAnimation;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,8 @@ public class MatchesFragment extends Fragment {
                 queueMatchOnClick(view);
             }
         });
+
+        queueAnimation = (AnimationDrawable) ((ImageView) getActivity().findViewById(R.id.quick_join_icon)).getDrawable();
     }
 
     @Override
@@ -70,6 +77,7 @@ public class MatchesFragment extends Fragment {
             public void call(Object... args) {
                 String otherUserUsername = args[0].toString();
                 Log.d("", "Match Found With: " + otherUserUsername);
+                queueAnimation.stop();
                 joinMatch(otherUserUsername);
             }
         });
@@ -87,6 +95,7 @@ public class MatchesFragment extends Fragment {
 
 
     public void queueMatchOnClick(View view) {
+        queueAnimation.start();
         JSONObject emissionJson = new JSONObject();
         try {
             emissionJson.put("username", AccountDetails.email);
