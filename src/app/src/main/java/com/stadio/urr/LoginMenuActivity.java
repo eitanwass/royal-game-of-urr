@@ -117,8 +117,8 @@ public class LoginMenuActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         enteredEmail = email;
-        enteredPassword = password;
         // TODO: hash password.
+        enteredPassword = password;
     }
 
     private void sendLoginData(Socket socket) {
