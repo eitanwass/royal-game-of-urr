@@ -52,7 +52,7 @@ public class RegisterMenuActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.loginPasswordEditText);
         repeatPasswordEditText = findViewById(R.id.registerRepeatPasswordEditText);
 
-        progressBar = findViewById(R.id.winsLossesRatioBar);
+        progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
     }
 

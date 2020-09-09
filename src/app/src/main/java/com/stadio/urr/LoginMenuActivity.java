@@ -48,7 +48,7 @@ public class LoginMenuActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.loginEmailEditText);
         passwordEditText = findViewById(R.id.loginPasswordEditText);
 
-        progressBar = findViewById(R.id.winsLossesRatioBar);
+        progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
     }
 
