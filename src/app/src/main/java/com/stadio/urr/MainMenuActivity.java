@@ -61,4 +61,10 @@ public class MainMenuActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AccountDetails.disconnect(this);
+    }
 }

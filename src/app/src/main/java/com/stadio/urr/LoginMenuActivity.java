@@ -1,5 +1,6 @@
 package com.stadio.urr;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -44,7 +45,8 @@ public class LoginMenuActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        sharedPref = getPreferences(MODE_PRIVATE);
+        sharedPref = getApplicationContext().getSharedPreferences(
+                getString(R.string.credentials), Context.MODE_PRIVATE);;
 
         getReferences();
 
@@ -99,7 +101,6 @@ public class LoginMenuActivity extends AppCompatActivity {
         if (remember.isChecked()) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.email), enteredEmail);
-            editor.commit();
             editor.putString(getString(R.string.password), enteredPassword);
             editor.commit();
         }
@@ -147,10 +148,17 @@ public class LoginMenuActivity extends AppCompatActivity {
 
         Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuActivity.class);
         startActivity(mainMenuActivity);
+        finish();
     }
 
     public void switchToRegisterMenu(View view) {
         Intent registerIntent = new Intent(getApplicationContext(), RegisterMenuActivity.class);
         startActivity(registerIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AccountDetails.disconnect(this);
     }
 }
