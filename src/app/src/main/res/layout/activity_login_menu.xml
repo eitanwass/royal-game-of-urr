@@ -94,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/roboto_light"
-                        android:text="@string/Password"
+                        android:text="@string/password"
                         android:textColor="@color/colorAccent"
                         android:textSize="24dp"
                         android:textStyle="bold"
@@ -163,6 +163,14 @@
                     android:textSize="36sp" />
 
             </androidx.cardview.widget.CardView>
+
+            <CheckBox
+                android:id="@+id/remember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remember me"
+                android:gravity="center"
+                android:fontFamily="@font/roboto_light"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"

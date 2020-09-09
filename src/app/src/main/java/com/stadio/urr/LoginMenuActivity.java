@@ -1,8 +1,10 @@
 package com.stadio.urr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +31,9 @@ public class LoginMenuActivity extends AppCompatActivity {
     private TextView errorTextView;
 
     private String enteredEmail = "";
+    private String enteredPassword = "";
+
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,24 @@ public class LoginMenuActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        sharedPref = getPreferences(MODE_PRIVATE);
+
         getReferences();
 
         ListenForEvents();
+
+        checkLoggedIn();
+    }
+
+    private void checkLoggedIn() {
+        enteredEmail = sharedPref.getString(getString(R.string.email), "");
+        enteredPassword = sharedPref.getString(getString(R.string.password), "");
+
+        assert enteredPassword != null;
+        if (!enteredEmail.equals("") && !enteredPassword.equals("")) {
+            sendLoginData(AccountDetails.socket);
+        }
+
     }
 
     private void getReferences() {
@@ -60,6 +80,8 @@ public class LoginMenuActivity extends AppCompatActivity {
 
                 AccountDetails.email = enteredEmail;
 
+                saveCredentials();
+
                 StartGame();
             }
         });
@@ -72,23 +94,37 @@ public class LoginMenuActivity extends AppCompatActivity {
         });
     }
 
+    private void saveCredentials() {
+        CheckBox remember = findViewById(R.id.remember_me);
+        if (remember.isChecked()) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.email), enteredEmail);
+            editor.commit();
+            editor.putString(getString(R.string.password), enteredPassword);
+            editor.commit();
+        }
+    }
+
     public void loginOnClick(View view) {
         progressBar.setVisibility(View.VISIBLE);
-
+        getLoginCredentials();
         sendLoginData(AccountDetails.socket);
     }
 
-    private void sendLoginData(Socket socket) {
+    private void getLoginCredentials() {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
         enteredEmail = email;
+        enteredPassword = password;
         // TODO: hash password.
+    }
 
+    private void sendLoginData(Socket socket) {
         JSONObject emissionJson = new JSONObject();
         try {
-            emissionJson.put("email", email);
-            emissionJson.put("password", password);
+            emissionJson.put("email", enteredEmail);
+            emissionJson.put("password", enteredPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
