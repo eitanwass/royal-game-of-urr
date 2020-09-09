@@ -445,7 +445,8 @@
             android:background="@drawable/dice_roll_button"
             app:layout_constraintEnd_toStartOf="@+id/dice1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:soundEffectsEnabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
