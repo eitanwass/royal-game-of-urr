@@ -2,15 +2,12 @@ package com.stadio.urr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
@@ -51,7 +48,7 @@ public class LoginMenuActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.loginEmailEditText);
         passwordEditText = findViewById(R.id.loginPasswordEditText);
 
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.winsLossesRatioBar);
         errorTextView = findViewById(R.id.errorTextView);
     }
 

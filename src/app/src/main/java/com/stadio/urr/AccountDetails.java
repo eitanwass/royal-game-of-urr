@@ -13,7 +13,8 @@ public class AccountDetails {
         try {
             IO.Options opts = new IO.Options();
             opts.transports = new String[] {Polling.NAME};
-            socket = IO.socket("https://urr-server.herokuapp.com/");
+//            socket = IO.socket("https://urr-server.herokuapp.com/");
+            socket = IO.socket("http://10.0.2.2");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -21,6 +22,9 @@ public class AccountDetails {
 
     public static String email;
     public static String username;
+
+    public static int wins = 0;
+    public static int losses = 0;
 
     public static Bitmap avatar;
 }

@@ -74,7 +74,7 @@
         android:fontFamily="@font/allerta"/>
 
     <TextView
-        android:id="@+id/wins_num"
+        android:id="@+id/winsAmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -87,7 +87,7 @@
         android:fontFamily="@font/allerta"/>
 
     <TextView
-        android:id="@+id/loses_num"
+        android:id="@+id/lossesAmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -100,15 +100,15 @@
         android:fontFamily="@font/allerta"/>
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/winsLossesRatioBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="223dp"
         android:layout_height="wrap_content"
         android:scaleY="4"
-        app:layout_constraintBottom_toBottomOf="@+id/wins_num"
-        app:layout_constraintEnd_toStartOf="@+id/loses_num"
-        app:layout_constraintStart_toEndOf="@+id/wins_num"
-        app:layout_constraintTop_toTopOf="@+id/wins_num"
+        app:layout_constraintBottom_toBottomOf="@+id/winsAmountLabel"
+        app:layout_constraintEnd_toStartOf="@+id/lossesAmountLabel"
+        app:layout_constraintStart_toEndOf="@+id/winsAmountLabel"
+        app:layout_constraintTop_toTopOf="@+id/winsAmountLabel"
         android:progressBackgroundTint="@color/losses"
         android:progressTint="@color/wins"
         android:progress="25"
