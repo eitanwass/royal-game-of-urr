@@ -1,6 +1,7 @@
 package com.stadio.urr;
 
 import android.accounts.Account;
+import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
@@ -35,6 +36,8 @@ public class ProfileFragment extends Fragment {
 
     private ProgressBar winsLossesRatioBar;
 
+    private Activity currentActivity = null;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        currentActivity = getActivity();
 
         ListenForEvents();
 
@@ -57,6 +62,7 @@ public class ProfileFragment extends Fragment {
         }
 
         AccountDetails.socket.emit("get-wins-losses");
+        Log.d("", "Sent get win losses");
     }
 
     @Override
@@ -117,7 +123,7 @@ public class ProfileFragment extends Fragment {
 
 
     private void updateProfileAvatar() {
-        getActivity().runOnUiThread(new Runnable() {
+        currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 profileImageView.setImageBitmap(AccountDetails.avatar);
@@ -126,7 +132,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateProfileWinsLosses() {
-        getActivity().runOnUiThread(new Runnable() {
+        currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 winsAmountLabel.setText(Integer.toString(AccountDetails.wins));

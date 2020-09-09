@@ -99,7 +99,6 @@ public class LoginMenuActivity extends AppCompatActivity {
         if (remember.isChecked()) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.email), enteredEmail);
-            editor.commit();
             editor.putString(getString(R.string.password), enteredPassword);
             editor.commit();
         }
@@ -116,8 +115,8 @@ public class LoginMenuActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         enteredEmail = email;
-        enteredPassword = password;
         // TODO: hash password.
+        enteredPassword = password;
     }
 
     private void sendLoginData(Socket socket) {
