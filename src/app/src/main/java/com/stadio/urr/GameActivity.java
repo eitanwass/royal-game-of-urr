@@ -53,8 +53,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView userAvatar;
     private TextView userName;
+    private TextView userSpeechBubble;
+
     private ImageView opponentAvatar;
     private TextView opponentName;
+    private TextView opponentSpeechBubble;
 
     private Tile rootTile;
 
@@ -195,8 +198,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         userAvatar = findViewById(R.id.userAvatar);
         userName = findViewById(R.id.userName);
+        userSpeechBubble = findViewById(R.id.userSpeechBubble);
+
         opponentAvatar = findViewById(R.id.opponentAvatar);
         opponentName = findViewById(R.id.opponentName);
+        opponentSpeechBubble = findViewById(R.id.opponentSpeechBubble);
 
         messages = findViewById(R.id.messages);
 
@@ -265,6 +271,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 movePiece(fromTile, toTile);
 
                 GameActivity.Instance.updateLabels();
+            }
+        });
+
+        AccountDetails.socket.on("receive-message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String message = args[0].toString();
+                displayMessage(opponentSpeechBubble, message);
             }
         });
     }
@@ -608,9 +622,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onReturnValue(String message, Dialog dialog) {
-        Log.d("onReturnValue", "Got value " + message + " back from Dialog!");
+        AccountDetails.socket.emit("send-message", message);
         dialog.dismiss();
-        displayMessage((TextView) findViewById(R.id.userSpeechBubble), message);
+        displayMessage(userSpeechBubble, message);
     }
 
     /**
@@ -618,15 +632,25 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * @param speechBubble The TextView we want to display the message on.
      * @param message The message we want to display.
      */
-    private void displayMessage(final TextView speechBubble, String message) {
+    private void displayMessage(final TextView speechBubble, final String message) {
         final View parent = (View) speechBubble.getParent();
-        parent.setVisibility(View.VISIBLE);
-        speechBubble.setText(message);
-        Handler handler = new Handler();
-        Runnable r=new Runnable() {
-            public void run() {parent.setVisibility(View.INVISIBLE);
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                parent.setVisibility(View.VISIBLE);
+
+                speechBubble.setText(message);
+
+                Handler handler = new Handler();
+                Runnable r=new Runnable() {
+                    public void run() {
+                        parent.setVisibility(View.INVISIBLE);
+                    }
+                };
+
+                handler.postDelayed(r, 3000);
             }
-        };
-        handler.postDelayed(r, 3000);
+        });
     }
 }
