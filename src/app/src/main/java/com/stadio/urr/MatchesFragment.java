@@ -89,6 +89,15 @@ public class MatchesFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("opponentInfo", opponentInfo);
 
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                queueAnimation.stop();
+                ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.quick_match));
+                in_queue = false;
+            }
+        });
+
         Intent gameStartActivity = new Intent(getActivity(), GameActivity.class);
         gameStartActivity.putExtras(bundle);
         gameStartActivity.putExtra(getString(R.string.sound_effects), ((SwitchMaterial) getActivity().findViewById(R.id.sound_effect_toggle)).isChecked());
@@ -96,8 +105,8 @@ public class MatchesFragment extends Fragment {
     }
 
     private void cancelQueue() {
-        queueAnimation.stop();
         AccountDetails.socket.emit("cancel-match");
+        queueAnimation.stop();
         ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.quick_match));
         in_queue = false;
     }

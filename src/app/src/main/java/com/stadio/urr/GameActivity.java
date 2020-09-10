@@ -281,6 +281,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 displayMessage(opponentSpeechBubble, message);
             }
         });
+
+        AccountDetails.socket.on("opponent-forfeit", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                onOpponentForfeit();
+            }
+        });
     }
 
     /**
@@ -652,5 +659,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 handler.postDelayed(r, 3000);
             }
         });
+    }
+
+
+    private void onOpponentForfeit() {
+        Log.d("", "Opponent forfeited match");
+        finish();
+    }
+
+    public void onExitMatch() {
+        Log.d("", "Exited match. Forfeit");
+        AccountDetails.socket.emit("exit-match");
     }
 }
