@@ -50,6 +50,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static RelativeLayout relativeLayout;
     private ConstraintLayout constraintLayoutDice;
 
+    private ImageView userAvatar;
+    private TextView userName;
+    private ImageView opponentAvatar;
+    private TextView opponentName;
+
     private Tile rootTile;
 
     private static int currentRoll = 0;
@@ -123,7 +128,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         getReferences();
 
-        messages = findViewById(R.id.messages);
+        userAvatar.setImageBitmap(AccountDetails.avatar);
+        userName.setText(AccountDetails.username);
 
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
@@ -177,6 +183,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void getReferences() {
         relativeLayout = findViewById(R.id.game_relative_layout);
         constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
+
+        userAvatar = findViewById(R.id.userAvatar);
+        userName = findViewById(R.id.userName);
+        opponentAvatar = findViewById(R.id.opponentAvatar);
+        opponentName = findViewById(R.id.opponentName);
+
+        messages = findViewById(R.id.messages);
+
         rootTile = findViewById(R.id.tile);
 
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
