@@ -604,5 +604,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onReturnValue(String message, Dialog dialog) {
         Log.d("onReturnValue", "Got value " + message + " back from Dialog!");
         dialog.dismiss();
+        displayMessage((TextView) findViewById(R.id.userSpeechBubble), message);
+    }
+
+    private void displayMessage(final TextView speechBubble, String message) {
+        final View parent = (View) speechBubble.getParent();
+        parent.setVisibility(View.VISIBLE);
+        speechBubble.setText(message);
+        Handler handler = new Handler();
+        Runnable r=new Runnable() {
+            public void run() {parent.setVisibility(View.INVISIBLE);
+            }
+        };
+        handler.postDelayed(r, 3000);
     }
 }
