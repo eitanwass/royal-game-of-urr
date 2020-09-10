@@ -1,5 +1,9 @@
 package com.stadio.urr;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 public class Utils {
     public final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
@@ -14,5 +18,12 @@ public class Utils {
         }
 
         return new String(hexChars);
+    }
+
+
+    public static Bitmap parseBitmapFromBase64(String b64) {
+        byte[] imageBytes = Base64.decode(b64, Base64.DEFAULT);
+
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 }

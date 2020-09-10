@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/edit_password_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/secondPlayerPic"
-        app:layout_constraintEnd_toEndOf="@+id/secondPlayerPic" />
+        app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
+        app:layout_constraintEnd_toEndOf="@+id/userAvatar" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/secondPlayerPic"
+        android:id="@+id/userAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
@@ -40,9 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="UserName"
-        app:layout_constraintEnd_toEndOf="@+id/secondPlayerPic"
-        app:layout_constraintStart_toStartOf="@+id/secondPlayerPic"
-        app:layout_constraintTop_toBottomOf="@+id/secondPlayerPic"
+        app:layout_constraintEnd_toEndOf="@+id/userAvatar"
+        app:layout_constraintStart_toStartOf="@+id/userAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/userAvatar"
         android:textColor="#000000"
         android:textSize="30dp"
         android:fontFamily="@font/roboto_light"/>

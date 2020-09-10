@@ -85,9 +85,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void call(Object... args) {
                 String imageBase64 = args[0].toString().split(",")[1];
-                byte[] imageBytes = Base64.decode(imageBase64, Base64.DEFAULT);
 
-                AccountDetails.avatar = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                AccountDetails.avatar = Utils.parseBitmapFromBase64(imageBase64);
 
                 updateProfileAvatar();
             }

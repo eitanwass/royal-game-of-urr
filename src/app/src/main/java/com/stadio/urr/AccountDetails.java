@@ -15,7 +15,7 @@ public class AccountDetails {
             IO.Options opts = new IO.Options();
             opts.transports = new String[] {Polling.NAME};
             socket = IO.socket("https://urr-server.herokuapp.com/");
-//             socket = IO.socket("http://10.0.2.2");
+            // socket = IO.socket("http://10.0.2.2");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
