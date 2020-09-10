@@ -30,6 +30,7 @@ import org.json.JSONObject;
 public class ProfileFragment extends Fragment {
 
     private ImageView profileImageView;
+    private TextView usernameLabel;
 
     private TextView winsAmountLabel;
     private TextView lossesAmountLabel;
@@ -56,13 +57,11 @@ public class ProfileFragment extends Fragment {
 
         if(AccountDetails.avatar == null) {
             AccountDetails.socket.emit("get-avatar");
-            Log.d("", "Requested avatar");
         } else {
             updateProfileAvatar();
         }
 
         AccountDetails.socket.emit("get-wins-losses");
-        Log.d("", "Sent get win losses");
     }
 
     @Override
@@ -73,6 +72,7 @@ public class ProfileFragment extends Fragment {
 
     private void getReferences() {
         profileImageView = getView().findViewById(R.id.profileImageView);
+        usernameLabel = getView().findViewById(R.id.usernameLabel);
 
         winsAmountLabel = getView().findViewById(R.id.winsAmountLabel);
         lossesAmountLabel = getView().findViewById(R.id.lossesAmountLabel);
@@ -127,6 +127,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void run() {
                 profileImageView.setImageBitmap(AccountDetails.avatar);
+                usernameLabel.setText(AccountDetails.username);
             }
         });
     }
