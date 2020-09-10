@@ -78,17 +78,16 @@ public class MatchesFragment extends Fragment {
         AccountDetails.socket.on("found-match", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                String otherUserUsername = args[0].toString();
-                Log.d("", "Match Found With: " + otherUserUsername);
+                Log.d("", "Match!");
                 queueAnimation.stop();
-                joinMatch(otherUserUsername);
+                joinMatch(args[0].toString());
             }
         });
     }
 
-    private void joinMatch(String otherUserUsername) {
+    private void joinMatch(String opponentInfo) {
         Bundle bundle = new Bundle();
-        bundle.putString("otherUsername", otherUserUsername);
+        bundle.putString("opponentInfo", opponentInfo);
 
         Intent gameStartActivity = new Intent(getActivity(), GameActivity.class);
         gameStartActivity.putExtras(bundle);

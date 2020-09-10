@@ -78,8 +78,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static boolean playSound;
     private boolean firstSetUp = true;
 
-    private static String otherUsername = "";
-
     private static int[] lastMovement = {-1, -1};
 
 
@@ -119,14 +117,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             getSupportActionBar().hide();
         }
 
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            otherUsername = bundle.getString("otherUsername");
-        }
-        
         ListenForEvents();
 
         getReferences();
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            JSONObject obj = null;
+
+            try {
+                obj = new JSONObject(bundle.getString("opponentInfo"));
+                opponentName.setText(obj.getString("username"));
+                String imageBase64 = obj.getString("avatar");
+                opponentAvatar.setImageBitmap(Utils.parseBitmapFromBase64(imageBase64));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
 
         userAvatar.setImageBitmap(AccountDetails.avatar);
         userName.setText(AccountDetails.username);
