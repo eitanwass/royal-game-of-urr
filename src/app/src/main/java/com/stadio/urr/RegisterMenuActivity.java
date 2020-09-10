@@ -16,6 +16,9 @@ import com.github.nkzawa.emitter.Emitter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class RegisterMenuActivity extends AppCompatActivity {
 
     private TextView repeatPasswordErrorTextView;
@@ -76,16 +79,23 @@ public class RegisterMenuActivity extends AppCompatActivity {
     }
 
     public void registerOnClick(View view) {
-        sendRegisterData();
+        try {
+            sendRegisterData();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void sendRegisterData(){
+    private void sendRegisterData() throws NoSuchAlgorithmException {
         String username = usernameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-        // TODO: Hash password.
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(password.getBytes());
+        password = Utils.bytesToHex(digest.digest());
 
         JSONObject emissionJson = new JSONObject();
         try {
