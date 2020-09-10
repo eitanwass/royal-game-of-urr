@@ -36,6 +36,8 @@ public class LoginMenuActivity extends AppCompatActivity {
     private String enteredEmail = "";
     private String enteredPassword = "";
 
+    private CheckBox rememberMeCheckbox;
+
     private SharedPreferences sharedPref;
 
     @Override
@@ -74,17 +76,36 @@ public class LoginMenuActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
+
+        rememberMeCheckbox = findViewById(R.id.remember_me);
     }
 
     public void ListenForEvents() {
         AccountDetails.socket.on("login-success", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                displayMessage(args[0].toString());
+                JSONObject obj = null;
+                String username = "";
+                String loginTime = "";
+
+                try {
+                    obj = new JSONObject(args[0].toString());
+                    username = obj.getString("username");
+                    loginTime = obj.getString("loginTime");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    displayMessage("Login Failed. Json exception on login authorization.");
+                    return;
+                }
+
+                displayMessage("Login succeeded");
 
                 AccountDetails.email = enteredEmail;
+                AccountDetails.username = username;
 
-                saveCredentials();
+                if (rememberMeCheckbox.isChecked()) {
+                    saveCredentials();
+                }
 
                 StartGame();
             }
@@ -99,13 +120,10 @@ public class LoginMenuActivity extends AppCompatActivity {
     }
 
     private void saveCredentials() {
-        CheckBox remember = findViewById(R.id.remember_me);
-        if (remember.isChecked()) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.email), enteredEmail);
-            editor.putString(getString(R.string.password), enteredPassword);
-            editor.commit();
-        }
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.email), enteredEmail);
+        editor.putString(getString(R.string.password), enteredPassword);
+        editor.commit();
     }
 
     public void loginOnClick(View view) {
