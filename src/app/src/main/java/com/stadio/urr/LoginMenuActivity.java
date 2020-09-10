@@ -18,6 +18,8 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,17 +110,21 @@ public class LoginMenuActivity extends AppCompatActivity {
 
     public void loginOnClick(View view) {
         progressBar.setVisibility(View.VISIBLE);
-        getLoginCredentials();
+        try {
+            getLoginCredentials();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         sendLoginData(AccountDetails.socket);
     }
 
-    private void getLoginCredentials() {
-        String email = emailEditText.getText().toString();
+    private void getLoginCredentials() throws NoSuchAlgorithmException {
+        enteredEmail = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        enteredEmail = email;
-        // TODO: hash password.
-        enteredPassword = password;
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(password.getBytes());
+        enteredPassword = Utils.bytesToHex(digest.digest());
     }
 
     private void sendLoginData(Socket socket) {
