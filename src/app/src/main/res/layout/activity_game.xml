@@ -516,6 +516,20 @@
         android:textColor="#000000" />
 
 
+    <TextView
+        android:id="@+id/messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/constraintLayoutPlayer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/allerta"
+        android:gravity="center"
+        android:text="Awwwww"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        android:visibility="invisible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -529,11 +543,10 @@
             android:id="@+id/cardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
             custom:layout_constraintBottom_toTopOf="@id/opponentName"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toStartOf="parent"
             custom:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -556,6 +569,25 @@
             custom:layout_constraintStart_toStartOf="@+id/cardView"
             custom:layout_constraintTop_toBottomOf="@id/cardView" />
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            app:cardCornerRadius="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView"
+            app:layout_constraintEnd_toStartOf="@+id/cardView"
+            app:layout_constraintTop_toTopOf="@+id/cardView"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/opponentSpeechBubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:padding="3dp"
+                android:text="message"
+                android:textColor="#000000" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -572,7 +604,6 @@
             android:id="@+id/cardView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
@@ -599,20 +630,26 @@
             app:layout_constraintStart_toStartOf="@+id/cardView2"
             app:layout_constraintTop_toBottomOf="@id/cardView2" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:cardCornerRadius="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView2"
+            app:layout_constraintStart_toEndOf="@+id/cardView2"
+            app:layout_constraintTop_toTopOf="@+id/cardView2"
+            android:visibility="invisible">
 
-    <TextView
-        android:id="@+id/messages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/constraintLayoutPlayer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/allerta"
-        android:gravity="center"
-        android:text="Awwwww"
-        android:textColor="#000000"
-        android:textSize="36sp"
-        android:visibility="invisible" />
+            <TextView
+                android:id="@+id/userSpeechBubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="message"
+                android:padding="3dp"
+                android:textColor="#000000"
+                android:fontFamily="@font/roboto_light"/>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
