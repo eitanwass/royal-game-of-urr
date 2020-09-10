@@ -600,6 +600,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         sendMessageDialog.show();
     }
 
+    /**
+     * Get's called when the message dialog finish.
+     *
+     * @param message The message that is being sent.
+     * @param dialog the dialog who sent it.
+     */
     @Override
     public void onReturnValue(String message, Dialog dialog) {
         Log.d("onReturnValue", "Got value " + message + " back from Dialog!");
@@ -607,6 +613,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         displayMessage((TextView) findViewById(R.id.userSpeechBubble), message);
     }
 
+    /**
+     * Displaying a message on a speech bubble.  
+     * @param speechBubble The TextView we want to display the message on.
+     * @param message The message we want to display.
+     */
     private void displayMessage(final TextView speechBubble, String message) {
         final View parent = (View) speechBubble.getParent();
         parent.setVisibility(View.VISIBLE);
