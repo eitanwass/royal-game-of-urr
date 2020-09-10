@@ -4,9 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -22,6 +30,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -34,13 +43,21 @@ enum Starts_Ends {
     START_WHITE, START_BLACK, END_WHITE, END_BLACK
 }
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener, SendMessageDialog.MessageDialogListener {
 
     public static GameActivity Instance;
 
     /* --View Variables-- */
     private static RelativeLayout relativeLayout;
     private ConstraintLayout constraintLayoutDice;
+
+    private ImageView userAvatar;
+    private TextView userName;
+    private TextView userSpeechBubble;
+
+    private ImageView opponentAvatar;
+    private TextView opponentName;
+    private TextView opponentSpeechBubble;
 
     private Tile rootTile;
 
@@ -53,6 +70,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Piece gamePieceBlack;
     private static ImageView[] dice;
     private static Map<TextView, MultiplePiecesTile> starts_ends;
+    private static TextView messages;
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
@@ -61,20 +79,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private float width_dp;
     private float height_dp;
 
-    private static String otherUsername = "";
+    private static boolean playSound;
+    private boolean firstSetUp = true;
 
     private static int[] lastMovement = {-1, -1};
 
 
     /* --Constants-- */
 
+    private final int OFFSET = 10;
     private final static int NUMBER_OF_DICE = 4;
     private final static int NUMBER_OF_PIECES = 7;
     private final static float NUMBER_OF_TILES_HORIZONTAL = 8;
     private final static float NUMBER_OF_TILES_VERTICAL = 3;
     public final static int PATH_LENGTH = 15;
 
-    private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 85 / 100;
+    private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 75 / 100;
     private final static float TILE_PERCENT_OF_SCREEN = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_HORIZONTAL;
     private final static float PIECE_PERCENTAGE_FROM_TILE = 0.75f;
 
@@ -101,15 +121,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             getSupportActionBar().hide();
         }
 
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            otherUsername = bundle.getString("otherUsername");
-        }
-        
         ListenForEvents();
 
         getReferences();
 
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            JSONObject obj = null;
+
+            try {
+                obj = new JSONObject(bundle.getString("opponentInfo"));
+                opponentName.setText(obj.getString("username"));
+                String imageBase64 = obj.getString("avatar");
+                opponentAvatar.setImageBitmap(Utils.parseBitmapFromBase64(imageBase64));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        userAvatar.setImageBitmap(AccountDetails.avatar);
+        userName.setText(AccountDetails.username);
 
         gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
         gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
@@ -131,6 +163,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
 
+        playSound = bundle.getBoolean(getString(R.string.sound_effects));
+
         AccountDetails.socket.emit("joined-game");
     }
 
@@ -141,15 +175,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * @param hasFocus Does the window have focus.
      */
     public void onWindowFocusChanged(boolean hasFocus) {
-        getSizes();
-        setTiles();
-        setPieces(gamePieceWhite, whitePieces);
-        setPieces(gamePieceBlack, blackPieces);
-        enableMyPieces();
-        ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
-        ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
-        setLabels();
-        DragNDrop.tiles = tiles;
+        if (firstSetUp) {
+            getSizes();
+            setTiles();
+            setPieces(gamePieceWhite, whitePieces);
+            setPieces(gamePieceBlack, blackPieces);
+            enableMyPieces();
+            ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
+            ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+            setLabels();
+            DragNDrop.tiles = tiles;
+            firstSetUp = false;
+        }
     }
 
 
@@ -158,6 +195,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void getReferences() {
         relativeLayout = findViewById(R.id.game_relative_layout);
         constraintLayoutDice = findViewById(R.id.constraint_layout_dice);
+
+        userAvatar = findViewById(R.id.userAvatar);
+        userName = findViewById(R.id.userName);
+        userSpeechBubble = findViewById(R.id.userSpeechBubble);
+
+        opponentAvatar = findViewById(R.id.opponentAvatar);
+        opponentName = findViewById(R.id.opponentName);
+        opponentSpeechBubble = findViewById(R.id.opponentSpeechBubble);
+
+        messages = findViewById(R.id.messages);
+
         rootTile = findViewById(R.id.tile);
 
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
@@ -225,6 +273,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 GameActivity.Instance.updateLabels();
             }
         });
+
+        AccountDetails.socket.on("receive-message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String message = args[0].toString();
+                displayMessage(opponentSpeechBubble, message);
+            }
+        });
+
+        AccountDetails.socket.on("opponent-forfeit", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                onOpponentForfeit();
+            }
+        });
     }
 
     /**
@@ -275,6 +338,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
+        playSound(R.raw.pop_sound);
         Piece movedPiece = from.getPiece();
 
         if (!to.isEmpty() && to.getPiece().side != movedPiece.side) {
@@ -306,9 +370,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         float diceHeight = constraintLayoutDice.getHeight();
         float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
         float marginBottom = convertDpToPixel(
-                (height_dp - diceHeight - tileSize * NUMBER_OF_TILES_VERTICAL) / 2, getApplicationContext());
+                (height_dp - diceHeight - tileSize * NUMBER_OF_TILES_VERTICAL - OFFSET) / 2, getApplicationContext());
         float margin_right = convertDpToPixel(
-                (width_dp - tileSize * NUMBER_OF_TILES_HORIZONTAL) / 2, getApplicationContext());
+                (width_dp  - tileSize * NUMBER_OF_TILES_HORIZONTAL) / 2, getApplicationContext());
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rootTile.getLayoutParams();
         params.setMargins(0, 0, (int) margin_right, (int) marginBottom);
@@ -452,6 +516,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * @return The sum of the dice.
      */
     private int rollDice() {
+        playSound(R.raw.dice_sound);
         Random random = new Random();
         int dieUpId = R.drawable.pyramid_die_up;
         int dieDownId = R.drawable.pyramid_die_down;
@@ -467,9 +532,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         didRoll = true;
         if (count == 0) {
             Log.d("INFO", "You rolled 0");
+            indicate0();
             changeTurn();
         }
         return count;
+    }
+
+    private void indicate0() {
+        messages.setVisibility(View.VISIBLE);
+        messages.setText(R.string.rolled_0);
+        Handler handler=new Handler();
+        Runnable r=new Runnable() {
+            public void run() {
+                messages.setVisibility(View.INVISIBLE);
+            }
+        };
+        handler.postDelayed(r, 2000);
     }
 
     /**
@@ -515,5 +593,82 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void anotherTurn() {
         resetDice();
+    }
+
+    public static void playSound(int sound) {
+        if (playSound) {
+            MediaPlayer mediaPlayer = MediaPlayer.create(GameActivity.Instance, sound);
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.release();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        GameExitDialog gameExitDialog=new GameExitDialog(this);
+        gameExitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        gameExitDialog.show();
+    }
+
+    public void openMessageDialogOnClick(View view) {
+        SendMessageDialog sendMessageDialog = new SendMessageDialog(this);
+        sendMessageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        sendMessageDialog.show();
+    }
+
+    /**
+     * Get's called when the message dialog finish.
+     *
+     * @param message The message that is being sent.
+     * @param dialog the dialog who sent it.
+     */
+    @Override
+    public void onReturnValue(String message, Dialog dialog) {
+        AccountDetails.socket.emit("send-message", message);
+        dialog.dismiss();
+        displayMessage(userSpeechBubble, message);
+    }
+
+    /**
+     * Displaying a message on a speech bubble.  
+     * @param speechBubble The TextView we want to display the message on.
+     * @param message The message we want to display.
+     */
+    private void displayMessage(final TextView speechBubble, final String message) {
+        final View parent = (View) speechBubble.getParent();
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                parent.setVisibility(View.VISIBLE);
+
+                speechBubble.setText(message);
+
+                Handler handler = new Handler();
+                Runnable r=new Runnable() {
+                    public void run() {
+                        parent.setVisibility(View.INVISIBLE);
+                    }
+                };
+
+                handler.postDelayed(r, 3000);
+            }
+        });
+    }
+
+
+    private void onOpponentForfeit() {
+        Log.d("", "Opponent forfeited match");
+        finish();
+    }
+
+    public void onExitMatch() {
+        Log.d("", "Exited match. Forfeit");
+        AccountDetails.socket.emit("exit-match");
     }
 }

@@ -2,35 +2,22 @@ package com.stadio.urr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.SharedMemory;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class RegisterMenuActivity extends AppCompatActivity {
 
@@ -48,6 +35,10 @@ public class RegisterMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_menu);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         getReferences();
 
@@ -88,16 +79,23 @@ public class RegisterMenuActivity extends AppCompatActivity {
     }
 
     public void registerOnClick(View view) {
-        sendRegisterData();
+        try {
+            sendRegisterData();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void sendRegisterData(){
+    private void sendRegisterData() throws NoSuchAlgorithmException {
         String username = usernameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-        // TODO: Hash password.
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(password.getBytes());
+        password = Utils.bytesToHex(digest.digest());
 
         JSONObject emissionJson = new JSONObject();
         try {

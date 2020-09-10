@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:overScrollMode="ifContentScrolls"
     android:verticalScrollbarPosition="defaultPosition"
-    tools:context=".RegisterMenuActivity">
+    tools:context=".RegisterMenuActivity"
+    android:background="@color/colorBackground">
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -22,98 +23,225 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/loginEmailTextView"
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="128dp"
-                android:text="Username:" />
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="30dp"
+                android:layout_marginTop="50dp">
 
-            <EditText
-                android:id="@+id/loginEmailEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="username"
-                android:inputType="textPersonName" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
 
-            <TextView
-                android:id="@+id/usernameErrorTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username Already Exists"
-                android:textColor="@color/colorError"
-                android:visibility="invisible" />
+                    <TextView
+                        android:id="@+id/loginEmailTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Username:"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/registerEmailTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Email:" />
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="22dp"
+                        app:layout_constraintTop_toBottomOf="@+id/usernameErrorTextView"
+                        tools:layout_editor_absoluteX="34dp">
 
-            <EditText
-                android:id="@+id/registerEmailEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="name@service.com"
-                android:inputType="textWebEmailAddress" />
+                        <EditText
+                            android:id="@+id/loginEmailEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:ems="10"
+                            android:hint="username"
+                            android:inputType="textPersonName" />
+                    </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/emailErrorTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email is not in correct format"
-                android:textColor="@color/colorError"
-                android:visibility="invisible" />
+                    <TextView
+                        android:id="@+id/usernameErrorTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Username Already Exists"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/cardView4"
+                        app:layout_constraintTop_toBottomOf="@+id/loginEmailTextView" />
 
-            <TextView
-                android:id="@+id/loginPasswordTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Password:" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <EditText
-                android:id="@+id/loginPasswordEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="*******"
-                android:inputType="textPassword" />
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/passwordErrorTextView"
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:text="Password is not up to Standards"
-                android:textColor="@color/colorError"
-                android:visibility="invisible" />
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="30dp">
 
-            <TextView
-                android:id="@+id/registerRepeatPasswordTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Repeat Password:" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
 
-            <EditText
-                android:id="@+id/registerRepeatPasswordEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ems="10"
-                android:hint="*******"
-                android:inputType="textPassword" />
+                    <TextView
+                        android:id="@+id/registerEmailTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/email"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="24sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/repeatPasswordErrorTextView"
-                android:layout_width="wrap_content"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="22dp"
+                        app:layout_constraintStart_toStartOf="@+id/registerEmailTextView"
+                        app:layout_constraintTop_toBottomOf="@+id/emailErrorTextView">
+
+                        <EditText
+                            android:id="@+id/registerEmailEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:ems="10"
+                            android:hint="@string/email_example"
+                            android:inputType="textWebEmailAddress" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/emailErrorTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Email is not in correct format"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/cardView5"
+                        app:layout_constraintTop_toBottomOf="@+id/registerEmailTextView" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:text="Is not the Same as Password"
-                android:textColor="@color/colorError"
-                android:visibility="invisible" />
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="30dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/loginPasswordTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/password"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="24sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="22dp"
+                        app:layout_constraintTop_toBottomOf="@+id/passwordErrorTextView"
+                        tools:layout_editor_absoluteX="10dp">
+
+                        <EditText
+                            android:id="@+id/loginPasswordEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:ems="10"
+                            android:hint="@string/password_hint"
+                            android:inputType="textPassword" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="22dp"
+                        app:layout_constraintTop_toBottomOf="@+id/repeatPasswordErrorTextView"
+                        tools:layout_editor_absoluteX="10dp">
+
+                        <EditText
+                            android:id="@+id/registerRepeatPasswordEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:ems="10"
+                            android:hint="@string/password_hint"
+                            android:inputType="textPassword"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/registerRepeatPasswordTextView" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/registerRepeatPasswordTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/repeat_password"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="24sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cardView6" />
+
+                    <TextView
+                        android:id="@+id/passwordErrorTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Password is not up to Standards"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/cardView6"
+                        app:layout_constraintTop_toBottomOf="@+id/loginPasswordTextView" />
+
+                    <TextView
+                        android:id="@+id/repeatPasswordErrorTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Is not the Same as Password"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/registerRepeatPasswordTextView" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/errorTextView"
@@ -122,13 +250,33 @@
                 android:layout_marginTop="16dp"
                 android:textColor="@color/colorError" />
 
-            <Button
+            <androidx.cardview.widget.CardView
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:elevation="10dp"
                 android:onClick="registerOnClick"
-                android:text="Register" />
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:cardPreventCornerOverlap="false">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_light"
+                    android:padding="20dp"
+                    android:text="@string/register"
+                    android:textColor="#000000"
+                    android:textSize="36sp" />
+
+            </androidx.cardview.widget.CardView>
 
             <ProgressBar
                 android:id="@+id/progressBar"

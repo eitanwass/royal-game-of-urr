@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/edit_password_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="@+id/cardView" />
+        app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
+        app:layout_constraintEnd_toEndOf="@+id/userAvatar" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/userAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
@@ -35,14 +35,14 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/usernameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="UserName"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintStart_toStartOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/userAvatar"
+        app:layout_constraintStart_toStartOf="@+id/userAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/userAvatar"
         android:textColor="#000000"
         android:textSize="30dp"
         android:fontFamily="@font/roboto_light"/>
@@ -58,7 +58,7 @@
         android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameLabel" />
 
     <TextView
         android:id="@+id/loses"
@@ -74,7 +74,7 @@
         android:fontFamily="@font/allerta"/>
 
     <TextView
-        android:id="@+id/wins_num"
+        android:id="@+id/winsAmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -87,7 +87,7 @@
         android:fontFamily="@font/allerta"/>
 
     <TextView
-        android:id="@+id/loses_num"
+        android:id="@+id/lossesAmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -100,15 +100,15 @@
         android:fontFamily="@font/allerta"/>
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/winsLossesRatioBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="223dp"
         android:layout_height="wrap_content"
         android:scaleY="4"
-        app:layout_constraintBottom_toBottomOf="@+id/wins_num"
-        app:layout_constraintEnd_toStartOf="@+id/loses_num"
-        app:layout_constraintStart_toEndOf="@+id/wins_num"
-        app:layout_constraintTop_toTopOf="@+id/wins_num"
+        app:layout_constraintBottom_toBottomOf="@+id/winsAmountLabel"
+        app:layout_constraintEnd_toStartOf="@+id/lossesAmountLabel"
+        app:layout_constraintStart_toEndOf="@+id/winsAmountLabel"
+        app:layout_constraintTop_toTopOf="@+id/winsAmountLabel"
         android:progressBackgroundTint="@color/losses"
         android:progressTint="@color/wins"
         android:progress="25"

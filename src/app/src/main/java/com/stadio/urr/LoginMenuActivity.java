@@ -1,8 +1,11 @@
 package com.stadio.urr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,6 +18,8 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,15 +34,40 @@ public class LoginMenuActivity extends AppCompatActivity {
     private TextView errorTextView;
 
     private String enteredEmail = "";
+    private String enteredPassword = "";
+
+    private CheckBox rememberMeCheckbox;
+
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_menu);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        sharedPref = getApplicationContext().getSharedPreferences(
+                getString(R.string.credentials), Context.MODE_PRIVATE);;
+
         getReferences();
 
         ListenForEvents();
+
+        checkLoggedIn();
+    }
+
+    private void checkLoggedIn() {
+        enteredEmail = sharedPref.getString(getString(R.string.email), "");
+        enteredPassword = sharedPref.getString(getString(R.string.password), "");
+
+        assert enteredPassword != null;
+        if (!enteredEmail.equals("") && !enteredPassword.equals("")) {
+            sendLoginData(AccountDetails.socket);
+        }
+
     }
 
     private void getReferences() {
@@ -46,15 +76,36 @@ public class LoginMenuActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         errorTextView = findViewById(R.id.errorTextView);
+
+        rememberMeCheckbox = findViewById(R.id.remember_me);
     }
 
     public void ListenForEvents() {
         AccountDetails.socket.on("login-success", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                displayMessage(args[0].toString());
+                JSONObject obj = null;
+                String username = "";
+                String loginTime = "";
+
+                try {
+                    obj = new JSONObject(args[0].toString());
+                    username = obj.getString("username");
+                    loginTime = obj.getString("loginTime");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    displayMessage("Login Failed. Json exception on login authorization.");
+                    return;
+                }
+
+                displayMessage("Login succeeded");
 
                 AccountDetails.email = enteredEmail;
+                AccountDetails.username = username;
+
+                if (rememberMeCheckbox.isChecked()) {
+                    saveCredentials();
+                }
 
                 StartGame();
             }
@@ -68,23 +119,37 @@ public class LoginMenuActivity extends AppCompatActivity {
         });
     }
 
+    private void saveCredentials() {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.email), enteredEmail);
+        editor.putString(getString(R.string.password), enteredPassword);
+        editor.commit();
+    }
+
     public void loginOnClick(View view) {
         progressBar.setVisibility(View.VISIBLE);
-
+        try {
+            getLoginCredentials();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         sendLoginData(AccountDetails.socket);
     }
 
-    private void sendLoginData(Socket socket) {
-        String email = emailEditText.getText().toString();
+    private void getLoginCredentials() throws NoSuchAlgorithmException {
+        enteredEmail = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        enteredEmail = email;
-        // TODO: hash password.
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        digest.update(password.getBytes());
+        enteredPassword = Utils.bytesToHex(digest.digest());
+    }
 
+    private void sendLoginData(Socket socket) {
         JSONObject emissionJson = new JSONObject();
         try {
-            emissionJson.put("email", email);
-            emissionJson.put("password", password);
+            emissionJson.put("email", enteredEmail);
+            emissionJson.put("password", enteredPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -96,6 +161,7 @@ public class LoginMenuActivity extends AppCompatActivity {
             @Override
             public void run() {
                 progressBar.setVisibility(View.INVISIBLE);
+                errorTextView.setVisibility(View.VISIBLE);
                 errorTextView.setText(displayMessage);
             }
         });
@@ -106,10 +172,17 @@ public class LoginMenuActivity extends AppCompatActivity {
 
         Intent mainMenuActivity = new Intent(getApplicationContext(), MainMenuActivity.class);
         startActivity(mainMenuActivity);
+        finish();
     }
 
     public void switchToRegisterMenu(View view) {
         Intent registerIntent = new Intent(getApplicationContext(), RegisterMenuActivity.class);
         startActivity(registerIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AccountDetails.disconnect(this);
     }
 }

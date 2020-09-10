@@ -2,6 +2,7 @@ package com.stadio.urr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void call(Object... args) {
                 displayMessage("--Connected to server--");
-
+                Log.d("lol (not) bug", "call: --Connected to server");
                 try {
                     TimeUnit.SECONDS.sleep(2);
                 } catch (InterruptedException e) {
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent loginIntent = new Intent(getApplicationContext(), LoginMenuActivity.class);
         startActivity(loginIntent);
+        finish();
     }
 
     private void displayMessage(final String displayMessage) {

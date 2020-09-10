@@ -11,4 +11,15 @@
     <string name="log_out">Log Out</string>
     <string name="change_user_name">Change User Name</string>
     <string name="change_password">Change Password</string>
+    <string name="rolled_0">Awwwwwww</string>
+    <string name="register_here">Don\'t have an account? Register Here!</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email_example">name@service.com</string>
+    <string name="email">Email:</string>
+    <string name="password">Password:</string>
+    <string name="repeat_password">Repeat Password:</string>
+    <string name="password_hint">*******</string>
+    <string name="cancel_queue">Cancel Queue</string>
+    <string name="credentials">Credentials</string>
 </resources>
