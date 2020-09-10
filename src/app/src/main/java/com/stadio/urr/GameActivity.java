@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -42,7 +43,7 @@ enum Starts_Ends {
     START_WHITE, START_BLACK, END_WHITE, END_BLACK
 }
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener, SendMessageDialog.MessageDialogListener {
 
     public static GameActivity Instance;
 
@@ -569,5 +570,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         GameExitDialog gameExitDialog=new GameExitDialog(this);
         gameExitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         gameExitDialog.show();
+    }
+
+    public void openMessageDialogOnClick(View view) {
+        SendMessageDialog sendMessageDialog = new SendMessageDialog(this);
+        sendMessageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        sendMessageDialog.show();
+    }
+
+    @Override
+    public void onReturnValue(String message, Dialog dialog) {
+        Log.d("onReturnValue", "Got value " + message + " back from Dialog!");
+        dialog.dismiss();
     }
 }

@@ -105,13 +105,13 @@ public class MatchesFragment extends Fragment {
 
 
     public void queueMatchOnClick(View view) {
-        if (!in_queue) {
+        //if (!in_queue) {
             queueAnimation.start();
             ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.cancel_queue));
             AccountDetails.socket.emit("quick-match");
             in_queue = true;
-        } else {
-            cancelQueue();
-        }
+        //} else {
+            //cancelQueue();
+        //}
     }
 }
