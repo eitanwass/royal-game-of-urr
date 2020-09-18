@@ -6,33 +6,27 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.net.URISyntaxException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +66,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static Map<TextView, MultiplePiecesTile> starts_ends;
     private static TextView messages;
 
+    private static ProgressBar userTimer;
+    private static ProgressBar opponentTimer;
+
     private static boolean didRoll = false;
     private static boolean myTurn = false;
     private static Sides myColor = Sides.WHITE;
@@ -92,7 +89,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private final static int NUMBER_OF_PIECES = 7;
     private final static float NUMBER_OF_TILES_HORIZONTAL = 8;
     private final static float NUMBER_OF_TILES_VERTICAL = 3;
-    public final static int PATH_LENGTH = 15;
+    public final static int PATH_LENGTH= 15;
+    public final static int TURN_TIME_SECONDS = 20;
+    public final static int TURN_TIME = TURN_TIME_SECONDS * 1000;
+
 
     private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 75 / 100;
     private final static float TILE_PERCENT_OF_SCREEN = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_HORIZONTAL;
@@ -206,6 +206,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         messages = findViewById(R.id.messages);
 
+        userTimer = findViewById(R.id.userTimer);
+        opponentTimer = findViewById(R.id.opponentTimer);
+
         rootTile = findViewById(R.id.tile);
 
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
@@ -232,6 +235,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 enableMyPieces();
 
                 Log.d("SETUP_SIDE", "Your color is: " + myColor.toString());
+                if (myColor == Sides.WHITE) {
+                    startTimer(userTimer);
+                } else {
+                    startTimer(opponentTimer);
+                }
             }
         });
 
@@ -577,6 +585,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (checkWin()) {
             Log.d("INFO", "changeTurn: " + (myColor == Sides.BLACK ? "Blacks" : "whites") + " Win!");
         }
+
+        startTimer(opponentTimer);
     }
 
     private static boolean checkWin() {
@@ -670,5 +680,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onExitMatch() {
         Log.d("", "Exited match. Forfeit");
         AccountDetails.socket.emit("exit-match");
+    }
+
+    public static void startTimer(final ProgressBar timer) {
+        if (TURN_TIME != 0) {
+            Instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ProgressBarAnimation anim = new ProgressBarAnimation(timer, 0, 100);
+                    anim.setDuration(TURN_TIME);
+                    timer.startAnimation(anim);
+                }
+            });
+        }
+    }
+
+    public static void timesUp() {
+        if (myTurn) {
+            changeTurn();
+        }
     }
 }
