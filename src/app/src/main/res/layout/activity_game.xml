@@ -548,15 +548,15 @@
             android:progress="0"
             android:progressDrawable="@drawable/circular_progress_bar"
             android:visibility="visible"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toStartOf="parent"
-            custom:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
@@ -632,12 +632,10 @@
             android:id="@+id/cardView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
             custom:layout_constraintBottom_toTopOf="@id/userName"

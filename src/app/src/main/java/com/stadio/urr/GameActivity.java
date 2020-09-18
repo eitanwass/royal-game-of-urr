@@ -222,6 +222,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 myTurn = true;
 
                 enableDisablePieces(myColor, true);
+
+                startTimer(userTimer);
+                stopTimer(opponentTimer);
             }
         });
 
@@ -587,6 +590,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         startTimer(opponentTimer);
+        stopTimer(userTimer);
     }
 
     private static boolean checkWin() {
@@ -698,6 +702,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static void timesUp() {
         if (myTurn) {
             changeTurn();
+        }
+    }
+
+    public static void stopTimer(final ProgressBar timer) {
+        if (TURN_TIME != 0) {
+            Instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    timer.clearAnimation();
+                    timer.setProgress(0);
+                }
+            });
         }
     }
 }
