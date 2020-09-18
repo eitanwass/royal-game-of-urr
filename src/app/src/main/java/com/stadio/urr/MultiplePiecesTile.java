@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MultiplePiecesTile extends Tile {
 
@@ -58,8 +59,8 @@ public class MultiplePiecesTile extends Tile {
      * @param pieces The array list we want to set our list to.
      */
     @SuppressWarnings("unchecked")
-    public void setPieces(ArrayList<Piece> pieces) {
-        this.pieces = (ArrayList<Piece>) pieces.clone();
+    public void setPieces(Piece[] pieces) {
+        this.pieces = new ArrayList<Piece> (Arrays.asList(pieces));
     }
 
     /**

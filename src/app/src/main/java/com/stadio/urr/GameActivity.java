@@ -6,13 +6,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -24,15 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.net.URISyntaxException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,9 +55,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static int currentRoll = 0;
 
-    private static ArrayList<Tile> tiles;
-    private static ArrayList<Piece> whitePieces;
-    private static ArrayList<Piece> blackPieces;
+    private static MultiplePiecesTile whiteStartTile;
+    private static MultiplePiecesTile blackStartTile;
+
+    private static Piece[] whitePieces;
+    private static Piece[] blackPieces;
     private Piece gamePieceWhite;
     private Piece gamePieceBlack;
     private static ImageView[] dice;
@@ -143,13 +137,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         userAvatar.setImageBitmap(AccountDetails.avatar);
         userName.setText(AccountDetails.username);
 
-        gamePieceWhite = createPiece(R.id.piece_white, R.id.start_white);
-        gamePieceBlack = createPiece(R.id.piece_black, R.id.start_black);
-
-        tiles = new ArrayList<>();
-        whitePieces = new ArrayList<>();
-        blackPieces = new ArrayList<>();
-
         dice = new ImageView[NUMBER_OF_DICE];
         dice[0] = findViewById(R.id.dice1);
         dice[1] = findViewById(R.id.dice2);
@@ -177,12 +164,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onWindowFocusChanged(boolean hasFocus) {
         if (firstSetUp) {
             getSizes();
-            setTiles();
-            setPieces(gamePieceWhite, whitePieces);
-            setPieces(gamePieceBlack, blackPieces);
+            Tile[] tiles = setTiles();
+
+            whitePieces = createPiecesFromOriginal(createPiece(R.id.piece_white, R.id.start_white));
+            blackPieces = createPiecesFromOriginal(createPiece(R.id.piece_black, R.id.start_black));
+
             enableMyPieces();
-            ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
-            ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+
+            whiteStartTile.setPieces(whitePieces);
+            blackStartTile.setPieces(blackPieces);
+
             setLabels();
             DragNDrop.tiles = tiles;
             firstSetUp = false;
@@ -207,6 +198,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         messages = findViewById(R.id.messages);
 
         rootTile = findViewById(R.id.tile);
+
+        whiteStartTile = findViewById(R.id.start_white);
+        blackStartTile = findViewById(R.id.start_black);
 
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
     }
@@ -263,8 +257,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
 
 
-                Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
-                Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
+                Tile fromTile = DragNDrop.getLandableTileByIndex(from, enemySide.getValue());
+                Tile toTile = DragNDrop.getLandableTileByIndex(to, enemySide.getValue());
 
                 lastMovement = newMovement;
 
@@ -366,7 +360,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Creates the tiles and sets their position and scale relative to the screen and the root tile.
      */
-    public void setTiles() {
+    public Tile[] setTiles() {
         float diceHeight = constraintLayoutDice.getHeight();
         float tileSize = (width_dp) * TILE_PERCENT_OF_SCREEN;
         float marginBottom = convertDpToPixel(
@@ -378,6 +372,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         params.setMargins(0, 0, (int) margin_right, (int) marginBottom);
         rootTile.setLayoutParams(params);
 
+        ArrayList<Tile> tiles = new ArrayList<>();
+
         for (int i = 0; i < relativeLayout.getChildCount(); i++) {
             View childView = relativeLayout.getChildAt(i);
             if (childView instanceof Tile) {
@@ -388,16 +384,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 tiles.add((Tile) childView);
             }
         }
+
+        return tiles.toArray(new Tile[0]);
     }
 
     /**
      * Sets an array list of all the pieces from a certain side.
      *
      * @param piece: the piece we want to duplicate.
-     * @param pieces: the array list we want to keep all the pieces in.
      */
     @SuppressLint("ClickableViewAccessibility")
-    private void setPieces(Piece piece, ArrayList<Piece> pieces) {
+    private Piece[] createPiecesFromOriginal(Piece piece) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+
         float piecePercentOfScreen = (float) (TILE_PERCENT_OF_SCREEN * PIECE_PERCENTAGE_FROM_TILE);
         float pieceSize = width_dp * piecePercentOfScreen;
 
@@ -433,6 +432,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             relativeLayout.addView(duplicatePiece);
         }
         relativeLayout.invalidate();
+
+        return pieces.toArray(new Piece[0]);
     }
 
     /**
