@@ -561,7 +561,6 @@
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
             custom:layout_constraintBottom_toTopOf="@id/opponentName"
-            custom:layout_constraintEnd_toEndOf="parent"
             custom:layout_constraintStart_toStartOf="parent"
             custom:layout_constraintTop_toTopOf="parent">
 
