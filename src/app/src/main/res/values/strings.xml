@@ -22,4 +22,5 @@
     <string name="password_hint">*******</string>
     <string name="cancel_queue">Cancel Queue</string>
     <string name="credentials">Credentials</string>
+    <string name="not_turn">It\'s not your turn.</string>
 </resources>

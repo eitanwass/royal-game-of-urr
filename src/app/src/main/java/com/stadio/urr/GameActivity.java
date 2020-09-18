@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 
@@ -282,6 +283,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 movePiece(fromTile, toTile);
 
                 GameActivity.Instance.updateLabels();
+
+                if (!myTurn && opponentTimer != null) {
+                    startTimer(opponentTimer);
+                }
             }
         });
 
@@ -459,7 +464,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void pushLabelsToFront() {
         for (TextView label : starts_ends.keySet()) {
-            relativeLayout.bringChildToFront(label);
         }
     }
 
@@ -468,10 +472,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     @SuppressLint("SetTextI18n")
     public void updateLabels() {
+        pushLabelsToFront();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (TextView label : starts_ends.keySet()) {
+                    relativeLayout.bringChildToFront(label);
                     int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
                     if (numberOfPieces == 0) {
                         label.setVisibility(View.INVISIBLE);
@@ -517,6 +523,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (myTurn) {
                 if (!didRoll)
                     currentRoll = rollDice();
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.not_turn), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -607,6 +615,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void anotherTurn() {
         resetDice();
+        startTimer(userTimer);
     }
 
     public static void playSound(int sound) {
