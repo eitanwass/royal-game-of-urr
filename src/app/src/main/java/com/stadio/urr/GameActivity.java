@@ -575,6 +575,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         resetDice();
         if (checkWin()) {
             Log.d("INFO", "changeTurn: " + (myColor == Sides.BLACK ? "Blacks" : "whites") + " Win!");
+
+            // Client won. Send to server.
+            AccountDetails.socket.emit("won-game");
         }
     }
 
