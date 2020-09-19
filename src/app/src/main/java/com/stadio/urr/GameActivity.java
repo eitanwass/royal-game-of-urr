@@ -6,13 +6,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -24,15 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.net.URISyntaxException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -178,11 +170,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (firstSetUp) {
             getSizes();
             setTiles();
-            setPieces(gamePieceWhite, whitePieces);
-            setPieces(gamePieceBlack, blackPieces);
+
+            whitePieces = createPiecesFromOriginal(gamePieceWhite);
+            blackPieces = createPiecesFromOriginal(gamePieceBlack);
+
             enableMyPieces();
+
             ((MultiplePiecesTile) findViewById(R.id.start_white)).setPieces(whitePieces);
             ((MultiplePiecesTile) findViewById(R.id.start_black)).setPieces(blackPieces);
+
             setLabels();
             DragNDrop.tiles = tiles;
             firstSetUp = false;
@@ -263,8 +259,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
 
 
-                Tile fromTile = DragNDrop.getTileByIndex(from, enemySide.getValue());
-                Tile toTile = DragNDrop.getTileByIndex(to, enemySide.getValue());
+                Tile fromTile = DragNDrop.getLandableTileByIndex(from, enemySide.getValue());
+                Tile toTile = DragNDrop.getLandableTileByIndex(to, enemySide.getValue());
 
                 lastMovement = newMovement;
 
@@ -394,10 +390,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      * Sets an array list of all the pieces from a certain side.
      *
      * @param piece: the piece we want to duplicate.
-     * @param pieces: the array list we want to keep all the pieces in.
      */
     @SuppressLint("ClickableViewAccessibility")
-    private void setPieces(Piece piece, ArrayList<Piece> pieces) {
+    private ArrayList<Piece> createPiecesFromOriginal(Piece piece) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+
         float piecePercentOfScreen = (float) (TILE_PERCENT_OF_SCREEN * PIECE_PERCENTAGE_FROM_TILE);
         float pieceSize = width_dp * piecePercentOfScreen;
 
@@ -433,6 +430,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             relativeLayout.addView(duplicatePiece);
         }
         relativeLayout.invalidate();
+
+        return pieces;
     }
 
     /**

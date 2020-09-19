@@ -1,18 +1,13 @@
 package com.stadio.urr;
 
 import android.annotation.SuppressLint;
-import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
@@ -116,7 +111,7 @@ public class DragNDrop implements View.OnTouchListener {
      * @return The tile in question.
      * @throws InvalidParameterException If a tile doesn't exist for the provided index and color side.
      */
-    public static Tile getTileByIndex(int tileIndex, int colorSide) {
+    public static Tile getLandableTileByIndex(int tileIndex, int colorSide) {
         for (Tile tile : tiles) {
             if (tile.getIndex() == tileIndex && tile.canLand(colorSide)) {
                 return tile;
@@ -196,7 +191,7 @@ public class DragNDrop implements View.OnTouchListener {
         int possibleTileIndex = findTile(piece).getIndex() + GameActivity.getCurrentRoll();
         possibleTileIndex = Math.min(possibleTileIndex, GameActivity.PATH_LENGTH);
 
-        return getTileByIndex(possibleTileIndex, piece.side);
+        return getLandableTileByIndex(possibleTileIndex, piece.side);
     }
 
     /**
