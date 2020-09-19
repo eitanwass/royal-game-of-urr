@@ -194,7 +194,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     /* --Private Methods-- */
 
     private void getReferences() {
@@ -241,6 +240,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 myColor = colorSide == 0 ? Sides.WHITE : Sides.BLACK;
 
                 enableMyPieces();
+                setPlayersColorIndication();
 
                 Log.d("SETUP_SIDE", "Your color is: " + myColor.toString());
                 if (myColor == Sides.WHITE) {
@@ -323,6 +323,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         piece.setOnTouchListener(new DragNDrop((Piece) findViewById(R.id.ghost_piece), relativeLayout));
         piece.setStartTile((Tile) findViewById(startId));
         return piece;
+    }
+
+
+    private void setPlayersColorIndication() {
+        Instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ImageView userIndication = findViewById(R.id.userPieceColor);
+                userIndication.setImageResource(myColor == Sides.WHITE ? R.drawable.piece_white : R.drawable.piece_black);
+                ImageView opponentIndication = findViewById(R.id.opponentPieceColor);
+                opponentIndication.setImageResource(myColor != Sides.WHITE ? R.drawable.piece_white : R.drawable.piece_black);
+            }
+        });
     }
 
     private void enableMyPieces() {
