@@ -21,7 +21,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
+ * Use the {@link SettingsFragment} factory method to
  * create an instance of this fragment.
  */
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -113,6 +113,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         editor.remove(getString(R.string.email));
         editor.remove(getString(R.string.password));
         editor.apply();
+        AccountDetails.clearAccountDetails();
+
         startActivity(new Intent(getActivity(), LoginMenuActivity.class));
         getActivity().finish();
     }
