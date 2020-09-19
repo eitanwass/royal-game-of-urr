@@ -16,9 +16,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 
@@ -64,6 +67,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static Map<TextView, MultiplePiecesTile> starts_ends;
     private static TextView messages;
 
+    private static ProgressBar userTimer;
+    private static ProgressBar opponentTimer;
+
     private static boolean didRoll = false;
     private static boolean myTurn = false;
     private static Sides myColor = Sides.WHITE;
@@ -84,7 +90,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private final static int NUMBER_OF_PIECES = 7;
     private final static float NUMBER_OF_TILES_HORIZONTAL = 8;
     private final static float NUMBER_OF_TILES_VERTICAL = 3;
-    public final static int PATH_LENGTH = 15;
+    public final static int PATH_LENGTH= 15;
+    public final static int TURN_TIME_SECONDS = 20;
+    public final static int TURN_TIME = TURN_TIME_SECONDS * 1000;
+
 
     private final static float PERCENTAGE_OF_TILES_FROM_SCREEN = (float) 75 / 100;
     private final static float TILE_PERCENT_OF_SCREEN = PERCENTAGE_OF_TILES_FROM_SCREEN / NUMBER_OF_TILES_HORIZONTAL;
@@ -202,6 +211,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         messages = findViewById(R.id.messages);
 
+        userTimer = findViewById(R.id.userTimer);
+        opponentTimer = findViewById(R.id.opponentTimer);
+
         rootTile = findViewById(R.id.tile);
 
         findViewById(R.id.dice_roll_button).setOnClickListener(this);
@@ -215,6 +227,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 myTurn = true;
 
                 enableDisablePieces(myColor, true);
+
+                startTimer(userTimer);
+                stopTimer(opponentTimer);
             }
         });
 
@@ -228,6 +243,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 enableMyPieces();
 
                 Log.d("SETUP_SIDE", "Your color is: " + myColor.toString());
+                if (myColor == Sides.WHITE) {
+                    startTimer(userTimer);
+                } else {
+                    startTimer(opponentTimer);
+                }
             }
         });
 
@@ -267,6 +287,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 movePiece(fromTile, toTile);
 
                 GameActivity.Instance.updateLabels();
+
+                if (!myTurn && opponentTimer != null) {
+                    startTimer(opponentTimer);
+                }
             }
         });
 
@@ -447,7 +471,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void pushLabelsToFront() {
         for (TextView label : starts_ends.keySet()) {
-            relativeLayout.bringChildToFront(label);
         }
     }
 
@@ -456,10 +479,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     @SuppressLint("SetTextI18n")
     public void updateLabels() {
+        pushLabelsToFront();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (TextView label : starts_ends.keySet()) {
+                    relativeLayout.bringChildToFront(label);
                     int numberOfPieces = Objects.requireNonNull(starts_ends.get(label)).getNumberOfPieces();
                     if (numberOfPieces == 0) {
                         label.setVisibility(View.INVISIBLE);
@@ -505,6 +530,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (myTurn) {
                 if (!didRoll)
                     currentRoll = rollDice();
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.not_turn), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -576,6 +603,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (checkWin()) {
             Log.d("INFO", "changeTurn: " + (myColor == Sides.BLACK ? "Blacks" : "whites") + " Win!");
         }
+
+        startTimer(opponentTimer);
+        stopTimer(userTimer);
     }
 
     private static boolean checkWin() {
@@ -592,6 +622,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void anotherTurn() {
         resetDice();
+        startTimer(userTimer);
     }
 
     public static void playSound(int sound) {
@@ -669,5 +700,36 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void onExitMatch() {
         Log.d("", "Exited match. Forfeit");
         AccountDetails.socket.emit("exit-match");
+    }
+
+    public static void startTimer(final ProgressBar timer) {
+        if (TURN_TIME != 0) {
+            Instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ProgressBarAnimation anim = new ProgressBarAnimation(timer, 0, 100);
+                    anim.setDuration(TURN_TIME);
+                    timer.startAnimation(anim);
+                }
+            });
+        }
+    }
+
+    public static void timesUp() {
+        if (myTurn) {
+            changeTurn();
+        }
+    }
+
+    public static void stopTimer(final ProgressBar timer) {
+        if (TURN_TIME != 0) {
+            Instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    timer.clearAnimation();
+                    timer.setProgress(0);
+                }
+            });
+        }
     }
 }

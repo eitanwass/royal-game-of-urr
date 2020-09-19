@@ -474,7 +474,7 @@
         android:background="@drawable/piece_number_indicator_circle"
         android:gravity="center"
         android:text="7"
-        android:textColor="#000000" />
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/pieces_left_start_black"
@@ -487,7 +487,7 @@
         android:background="@drawable/piece_number_indicator_circle"
         android:gravity="center"
         android:text="7"
-        android:textColor="#000000" />
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/pieces_left_end_black"
@@ -500,7 +500,7 @@
         android:background="@drawable/piece_number_indicator_circle"
         android:gravity="center"
         android:text="0"
-        android:textColor="#000000" />
+        android:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/pieces_left_end_white"
@@ -513,7 +513,7 @@
         android:background="@drawable/piece_number_indicator_circle"
         android:gravity="center"
         android:text="0"
-        android:textColor="#000000" />
+        android:textColor="@color/colorAccent" />
 
 
     <TextView
@@ -535,14 +535,48 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="15dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
         custom:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="invisible"
+            app:cardCornerRadius="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView"
+            app:layout_constraintEnd_toStartOf="@+id/opponentTimer"
+            app:layout_constraintTop_toTopOf="@+id/cardView">
+
+            <TextView
+                android:id="@+id/opponentSpeechBubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:padding="3dp"
+                android:text="message"
+                android:textColor="#000000" />
+        </androidx.cardview.widget.CardView>
+
+        <ProgressBar
+            android:id="@+id/opponentTimer"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/circle_shape"
+            android:progress="0"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
@@ -569,25 +603,6 @@
             custom:layout_constraintStart_toStartOf="@+id/cardView"
             custom:layout_constraintTop_toBottomOf="@id/cardView" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            app:cardCornerRadius="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/cardView"
-            app:layout_constraintEnd_toStartOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="@+id/cardView"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/opponentSpeechBubble"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_light"
-                android:padding="3dp"
-                android:text="message"
-                android:textColor="#000000" />
-        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -601,10 +616,47 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="invisible"
+            app:cardCornerRadius="3dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/userTimer"
+            app:layout_constraintTop_toTopOf="@+id/cardView2">
+
+            <TextView
+                android:id="@+id/userSpeechBubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:padding="3dp"
+                android:text="message"
+                android:textColor="#000000" />
+        </androidx.cardview.widget.CardView>
+
+        <ProgressBar
+            android:id="@+id/userTimer"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/circle_shape"
+            android:progress="0"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/userTimer"
             custom:cardCornerRadius="25dp"
             custom:cardPreventCornerOverlap="false"
             custom:layout_constraintBottom_toTopOf="@id/userName"
@@ -629,26 +681,6 @@
             app:layout_constraintEnd_toEndOf="@+id/cardView2"
             app:layout_constraintStart_toStartOf="@+id/cardView2"
             app:layout_constraintTop_toBottomOf="@id/cardView2" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            app:cardCornerRadius="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/cardView2"
-            app:layout_constraintStart_toEndOf="@+id/cardView2"
-            app:layout_constraintTop_toTopOf="@+id/cardView2"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/userSpeechBubble"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="message"
-                android:padding="3dp"
-                android:textColor="#000000"
-                android:fontFamily="@font/roboto_light"/>
-        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
