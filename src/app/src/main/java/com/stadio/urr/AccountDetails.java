@@ -29,6 +29,8 @@ public class AccountDetails {
 
     public static Bitmap avatar;
 
+    public static boolean soundEffects;
+
     public static void disconnect(Activity activity) {
         socket.off();
         socket.disconnect();

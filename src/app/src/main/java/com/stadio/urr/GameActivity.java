@@ -164,7 +164,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_white), (MultiplePiecesTile) findViewById(R.id.end_white));
         starts_ends.put((TextView) findViewById(R.id.pieces_left_end_black), (MultiplePiecesTile) findViewById(R.id.end_black));
 
-        playSound = bundle.getBoolean(getString(R.string.sound_effects));
+        playSound = AccountDetails.soundEffects;
 
         AccountDetails.socket.emit("joined-game");
     }
