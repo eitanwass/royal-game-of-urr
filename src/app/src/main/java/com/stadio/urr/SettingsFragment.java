@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingsFragment} factory method to
@@ -69,6 +70,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     private void setSwitches() {
         boolean sound = sharedPref.getBoolean(getString(R.string.sound_effects), true);
         soundEffectToggle.setChecked(sound);
+        AccountDetails.soundEffects = sound;
     }
 
     @Override
@@ -76,6 +78,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         switch (compoundButton.getId()) {
             case R.id.sound_effect_toggle:
                 commitToSharedPreferences(getString(R.string.sound_effects), b);
+                AccountDetails.soundEffects = b;
                 break;
         }
     }

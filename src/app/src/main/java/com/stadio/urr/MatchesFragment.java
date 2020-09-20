@@ -100,7 +100,6 @@ public class MatchesFragment extends Fragment {
 
         Intent gameStartActivity = new Intent(getActivity(), GameActivity.class);
         gameStartActivity.putExtras(bundle);
-        gameStartActivity.putExtra(getString(R.string.sound_effects), ((SwitchMaterial) getActivity().findViewById(R.id.sound_effect_toggle)).isChecked());
         startActivity(gameStartActivity);
     }
 
@@ -113,13 +112,13 @@ public class MatchesFragment extends Fragment {
 
 
     public void queueMatchOnClick(View view) {
-        if (!in_queue) {
+        //if (!in_queue) {
             queueAnimation.start();
             ((TextView) getActivity().findViewById(R.id.quick_match_text_view)).setText(getString(R.string.cancel_queue));
             AccountDetails.socket.emit("quick-match");
             in_queue = true;
-        } else {
-            cancelQueue();
-        }
+        //} else {
+            //cancelQueue();
+        //}
     }
 }
