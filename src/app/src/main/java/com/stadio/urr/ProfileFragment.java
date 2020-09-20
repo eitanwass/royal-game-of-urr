@@ -73,7 +73,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        AccountDetails.socket.emit("get-wins-losses");
     }
 
     private void getReferences() {
