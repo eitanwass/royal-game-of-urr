@@ -31,6 +31,15 @@ public class AccountDetails {
 
     public static boolean soundEffects;
 
+    public static void clearAccountDetails() {
+        email = "";
+        username = "";
+
+        wins = 0;
+        losses = 0;
+        avatar = null;
+    }
+
     public static void disconnect(Activity activity) {
         socket.off();
         socket.disconnect();

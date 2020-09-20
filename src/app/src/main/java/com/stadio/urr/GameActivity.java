@@ -274,7 +274,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("", "Found duplicate movement. Ignored");
                     return;
                 }
-                Log.d("MOVE_PIECE_EVENT", "Moving from tile " + from + " to tile " + to);
 
                 Sides enemySide = myColor == Sides.WHITE ? Sides.BLACK : Sides.WHITE;
 
@@ -710,6 +709,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onOpponentForfeit() {
         Log.d("", "Opponent forfeited match");
+        // Client won. Send to server.
+        AccountDetails.socket.emit("won-game");
         finish();
     }
 

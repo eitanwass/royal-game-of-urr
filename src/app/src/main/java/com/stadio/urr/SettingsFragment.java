@@ -20,6 +20,11 @@ import android.widget.LinearLayout;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link SettingsFragment} factory method to
+ * create an instance of this fragment.
+ */
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private SwitchMaterial soundEffectToggle;
@@ -111,6 +116,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         editor.remove(getString(R.string.email));
         editor.remove(getString(R.string.password));
         editor.apply();
+        AccountDetails.clearAccountDetails();
+
         startActivity(new Intent(getActivity(), LoginMenuActivity.class));
         getActivity().finish();
     }

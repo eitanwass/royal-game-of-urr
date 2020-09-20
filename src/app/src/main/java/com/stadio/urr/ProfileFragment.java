@@ -70,6 +70,11 @@ public class ProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void getReferences() {
         profileImageView = getView().findViewById(R.id.profileImageView);
         usernameLabel = getView().findViewById(R.id.usernameLabel);
