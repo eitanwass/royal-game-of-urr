@@ -47,7 +47,7 @@ public class GameExitDialog extends Dialog implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.yes_button:
                 GameActivity gameActivity = (GameActivity) activity;
-                gameActivity.onExitMatch();
+                GameActivity.onExitMatch();
                 gameActivity.finish();
                 break;
             case R.id.no_button:

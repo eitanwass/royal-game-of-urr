@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -72,6 +73,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private static boolean didRoll = false;
     private static boolean myTurn = false;
+    private static boolean didExit;
     private static Sides myColor = Sides.WHITE;
 
     private float width_dp;
@@ -167,6 +169,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         playSound = bundle.getBoolean(getString(R.string.sound_effects));
 
         AccountDetails.socket.emit("joined-game");
+
+        didExit = false;
     }
 
     /**
@@ -613,9 +617,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         GameActivity.Instance.enableDisablePieces(myColor, false);
 
         resetDice();
-        if (checkWin()) {
+        int win = checkWin();
+        if (win != 0) {
             Log.d("INFO", "changeTurn: " + (myColor == Sides.BLACK ? "Blacks" : "whites") + " Win!");
-
+            startEndGameActivity(myColor.getValue() == checkWin());
             // Client won. Send to server.
             AccountDetails.socket.emit("won-game");
         }
@@ -624,13 +629,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         stopTimer(userTimer);
     }
 
-    private static boolean checkWin() {
+    private static int checkWin() {
         for (MultiplePiecesTile tile : starts_ends.values()) {
             if (tile.isEnd() && tile.getNumberOfPieces() == NUMBER_OF_PIECES) {
-                return true;
+                return tile.getPiece().side;
             }
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -710,12 +715,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void onOpponentForfeit() {
         Log.d("", "Opponent forfeited match");
-        finish();
+        startEndGameActivity(true);
     }
 
-    public void onExitMatch() {
+    public static void onExitMatch() {
         Log.d("", "Exited match. Forfeit");
         AccountDetails.socket.emit("exit-match");
+    }
+
+    public static void startEndGameActivity(final boolean did_win) {
+        Instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!didExit) {
+                    Intent startEnd = new Intent(Instance, EndGameActivity.class);
+                    startEnd.putExtras(Instance.getIntent().getExtras());
+                    startEnd.putExtra(Instance.getString(R.string.win_intent), did_win);
+                    Instance.startActivity(startEnd);
+                    didExit = true;
+                    //Instance.finish();
+                    Instance.finish();
+                }
+            }
+        });
     }
 
     public static void startTimer(final ProgressBar timer) {
